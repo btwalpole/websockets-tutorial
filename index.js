@@ -4,7 +4,7 @@ const socket = require("socket.io");
 const app = express();
 const PORT = process.env.PORT || 3000;
 const server = app.listen(PORT, function () {
-  console.log("listening to requests on port 4000");
+  console.log("listening to requests on port 3000");
 });
 
 // Serve Static files
@@ -18,6 +18,10 @@ io.on("connection", function (socket) {
 
   socket.on("chat", function (data) {
     io.sockets.emit("chat", data);
+  });
+
+  socket.on("reset", function () {
+    io.sockets.emit("reset");
   });
 
   socket.on("typing", function (data) {
