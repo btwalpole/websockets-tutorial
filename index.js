@@ -23,8 +23,4 @@ io.on("connection", function (socket) {
   socket.on("reset", function () {
     io.sockets.emit("reset");
   });
-
-  socket.on("typing", function (data) {
-    socket.broadcast.emit("typing", data);
-  });
 });

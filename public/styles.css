@@ -1,30 +1,78 @@
+* {
+    box-sizing: border-box;
+    font-weight: normal;
+    padding: 0;
+    margin: 0;
+  }
+/*
+  * {
+    background: #000 !important;
+    color: #0f0 !important;
+    outline: solid #f00 1px !important;
+  }
+*/
 body{
     font-family: 'Nunito';
-}
-
-h2{
-    font-size: 18px;
-    padding: 10px 20px;
-    color: #575ed8;
+    height: 100vh;
+    width: 100vw;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 #container {
     display: flex;
     align-items: center;
     flex-direction: column;
+    margin: 0;
+    width: 100%;
+    height: 100%;
+}
+
+#reset {
+    font-size: 3em;
+    width: 200px;
+    border-radius: .5em;
+    margin: 1em 1em;
+}
+
+#nameInput {
+    display: flex;
+    flex-direction: row;
+    margin-bottom: 1em;
+}
+
+label{
+    font-family: inherit;
+    font-size: 3em;
+    display: flex;
+    align-items: center;
+    text-align: center;
+    justify-content: center;
+}
+
+input{
+    display: flex;
+    padding: 10px 20px;
+    box-sizing: border-box;
+    border-radius: .25em;
+    background: lightgrey;
+    font-family: Nunito;
+    margin-left: .75em;
+    font-size: 3em;
 }
 
 #display{
     display: flex;
     flex-direction: column;
-    max-width: 600px;
+    width: 80vw;
     border: 1px solid #ddd;
     box-shadow: 1px 3px 5px rgba(0,0,0,0.05);
     border-radius: 2px;
 }
 
 #chat-window{
-    height: 300px;
+    height: 500px;
     overflow: auto;
     background: #f9f9f9;
 }
@@ -34,35 +82,11 @@ h2{
     margin: 0 20px;
     border-bottom: 1px solid #e9e9e9;
     color: #555;
-}
-
-#feedback p{
-    color: #aaa;
-    padding: 14px 0px;
-    margin: 0 20px;
+    font-size: 3em;
 }
 
 #output strong{
     color: #575ed8;
-}
-
-label{
-    box-sizing: border-box;
-    display: block;
-    padding: 10px 20px;
-}
-
-input{
-    padding: 10px 20px;
-    box-sizing: border-box;
-    background: #eee;
-    border: 0;
-    display: block;
-    width: 100%;
-    background: #fff;
-    border-bottom: 1px solid #eee;
-    font-family: Nunito;
-    font-size: 16px;
 }
 
 button{
@@ -81,7 +105,9 @@ button{
 
 #buzz {
     background-color: red;
-    border-radius: 100px;
-    width: 200px;
-    height: 200px;
+    border-radius: 500px;
+    width: 400px;
+    height: 400px;
+    margin: 2em;
+    font-size: 3em;
 }

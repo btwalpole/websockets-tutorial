@@ -7,17 +7,22 @@
     </head>
     <body>
         <div id='container'>
+            <button id="reset">Reset</button>
+            <div id="nameInput">
+                <label for="name">Name:</label>
+                <input id="name" type="text" name="name"/>
+            </div>
+        
             <div id='display'>
-                <button id="reset">Reset</button>
                 <div id='chat-window'>
                     <div id='output'></div>
-                    <div id='feedback'></div>
                 </div>
-                <input id="name" type="text" placeholder="Name" />
-                <input id="message" type="text" placeholder="Message" />
             </div>
-            <button id="buzz">Buzz</button>
+            <button id="buzz">BUZZ ME BABY</button>
         </div>
-        <script src='/chat.js'></script>
+
+        <audio id='audio' data-key="71" src="sparkle.wav"></audio>
+
+        <script src='/buzzer.js'></script>
     </body>
 </html>
