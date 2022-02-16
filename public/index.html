@@ -6,14 +6,16 @@
         <link href='/styles.css' rel='stylesheet'/>
     </head>
     <body>
-        <div id='mario-chat'>
-            <button id="reset">Reset</button>
-            <div id='chat-window'>
-                <div id='output'></div>
-                <div id='feedback'></div>
+        <div id='container'>
+            <div id='display'>
+                <button id="reset">Reset</button>
+                <div id='chat-window'>
+                    <div id='output'></div>
+                    <div id='feedback'></div>
+                </div>
+                <input id="name" type="text" placeholder="Name" />
+                <input id="message" type="text" placeholder="Message" />
             </div>
-            <input id="name" type="text" placeholder="Name" />
-            <input id="message" type="text" placeholder="Message" />
             <button id="buzz">Buzz</button>
         </div>
         <script src='/chat.js'></script>

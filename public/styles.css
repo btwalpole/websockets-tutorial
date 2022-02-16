@@ -8,16 +8,23 @@ h2{
     color: #575ed8;
 }
 
-#mario-chat{
+#container {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+}
+
+#display{
+    display: flex;
+    flex-direction: column;
     max-width: 600px;
-    margin: 30px auto;
     border: 1px solid #ddd;
     box-shadow: 1px 3px 5px rgba(0,0,0,0.05);
     border-radius: 2px;
 }
 
 #chat-window{
-    height: 400px;
+    height: 300px;
     overflow: auto;
     background: #f9f9f9;
 }
@@ -70,4 +77,11 @@ button{
 
 .disabled-btn {
     background: grey;
+}
+
+#buzz {
+    background-color: red;
+    border-radius: 100px;
+    width: 200px;
+    height: 200px;
 }
