@@ -19,8 +19,11 @@ function playSound() {
 }
 
 buzzBtn.addEventListener("click", function () {
+  const random = Math.floor(Math.random() * emojis.length);
+
   socket.emit("chat", {
     name: userName.value,
+    emojiNum: random,
   });
 
   playSound();
@@ -32,12 +35,11 @@ resetBtn.addEventListener("click", function () {
 
 //Listen for events
 socket.on("chat", function (data) {
-  const random = Math.floor(Math.random() * emojis.length);
   output.innerHTML +=
     "<p><strong>" +
     data.name +
     " </strong> buzzed first!! " +
-    emojis[random] +
+    emojis[data.emojiNum] +
     " </p>";
   buzzBtn.disabled = true;
   buzzBtn.classList.add("disabled-buzz");
