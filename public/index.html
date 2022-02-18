@@ -1,28 +1,29 @@
 <html>
     <head>
         <meta charset="utf-8">
-        <title>Buzzer</title>
+        <title>Epic Buzzer</title>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.4.1/socket.io.min.js"></script>
+        <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+        <link rel="manifest" href="/site.webmanifest">
         <link href='/styles.css' rel='stylesheet'/>
     </head>
     <body>
         <div id='container'>
-            <button id="reset">Reset</button>
+            <button id="reset" class="disabled-reset" disabled="true">Reset</button>
             <div id="nameInput">
                 <label for="name">Name:</label>
                 <input id="name" type="text" name="name"/>
             </div>
-        
             <div id='display'>
                 <div id='chat-window'>
                     <div id='output'></div>
                 </div>
             </div>
-            <button id="buzz">BUZZ ME BABY</button>
+            <button id="buzz" class="enabled-buzz">BUZZ ME BABY</button>
         </div>
-
-        <audio id='audio' data-key="71" src="sparkle.wav"></audio>
-
+        <audio id='audio' preload='auto' src="sparkle.wav"></audio>
         <script src='/buzzer.js'></script>
     </body>
 </html>

@@ -29,11 +29,35 @@ body{
     height: 100%;
 }
 
+
+.disabled-reset {
+    background: grey;
+}
+
+.enabled-reset {
+    background-image: linear-gradient(
+  330deg,
+  hsl(237deg 100% 50%) 0%,
+  hsl(234deg 94% 54%) 7%,
+  hsl(230deg 87% 54%) 15%,
+  hsl(226deg 81% 53%) 23%,
+  hsl(220deg 76% 51%) 31%,
+  hsl(212deg 80% 47%) 39%,
+  hsl(221deg 62% 56%) 48%,
+  hsl(249deg 55% 63%) 57%,
+  hsl(274deg 57% 61%) 67%,
+  hsl(292deg 60% 58%) 77%,
+  hsl(305deg 74% 57%) 88%,
+  hsl(310deg 100% 50%) 100%
+);
+}
+
 #reset {
     font-size: 3em;
     width: 200px;
     border-radius: .5em;
     margin: 1em 1em;
+    cursor: pointer;
 }
 
 #nameInput {
@@ -43,7 +67,6 @@ body{
 }
 
 label{
-    font-family: inherit;
     font-size: 3em;
     display: flex;
     align-items: center;
@@ -69,6 +92,7 @@ input{
     border: 1px solid #ddd;
     box-shadow: 1px 3px 5px rgba(0,0,0,0.05);
     border-radius: 2px;
+    overflow-y: auto
 }
 
 #chat-window{
@@ -99,15 +123,30 @@ button{
     border-radius: 0 0 2px 2px;
 }
 
-.disabled-btn {
+.disabled-buzz {
     background: grey;
 }
 
+.enabled-buzz {
+    background-image: linear-gradient(
+        330deg,
+        hsl(0deg 100% 32%) 0%,
+        hsl(360deg 100% 37%) 27%,
+        hsl(360deg 100% 42%) 61%,
+        hsl(360deg 100% 47%) 78%,
+        hsl(5deg 100% 56%) 88%,
+        hsl(7deg 100% 64%) 94%,
+        hsl(5deg 100% 72%) 97%,
+        hsl(0deg 89% 78%) 100%
+    );
+}
+
 #buzz {
-    background-color: red;
     border-radius: 500px;
     width: 400px;
     height: 400px;
     margin: 2em;
     font-size: 3em;
+    cursor: pointer;
+    
 }

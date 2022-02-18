@@ -5,7 +5,8 @@ const socket = io();
 //Query DOM
 var resetBtn = document.getElementById("reset"),
   userName = document.getElementById("name"),
-  btn = document.getElementById("buzz"),
+  buzzBtn = document.getElementById("buzz"),
+  chat = document.getElementById("chat-window"),
   output = document.getElementById("output");
 
 // Emit events
@@ -17,7 +18,7 @@ function playSound() {
   audio.play();
 }
 
-btn.addEventListener("click", function () {
+buzzBtn.addEventListener("click", function () {
   socket.emit("chat", {
     name: userName.value,
   });
@@ -38,13 +39,22 @@ socket.on("chat", function (data) {
     " </strong> buzzed first!! " +
     emojis[random] +
     " </p>";
-  btn.disabled = true;
-  btn.classList.add("disabled-btn");
+  buzzBtn.disabled = true;
+  buzzBtn.classList.add("disabled-buzz");
+  buzzBtn.classList.remove("enabled-buzz");
+  resetBtn.disabled = false;
+  resetBtn.classList.add("enabled-reset");
+  resetBtn.classList.remove("disabled-reset");
+  chat.scrollTop = chat.scrollHeight;
 });
 
 socket.on("reset", function () {
-  btn.disabled = false;
-  btn.classList.remove("disabled-btn");
+  buzzBtn.disabled = false;
+  buzzBtn.classList.remove("disabled-buzz");
+  buzzBtn.classList.add("enabled-buzz");
+  resetBtn.disabled = true;
+  resetBtn.classList.add("disabled-reset");
+  resetBtn.classList.remove("enabled-reset");
 });
 
 const emojis = [
@@ -66,9 +76,9 @@ const emojis = [
   "&#129428;",
   "&#129504;",
   "&#128170;&#127996;",
-  "&#;",
-  "&#;",
-  "&#;",
-  "&#;",
-  "&#;",
+  "&#11088;",
+  "&#127752;",
+  "&#127790;",
+  "&#127803;",
+  "&#127850;",
 ];
