@@ -10,14 +10,6 @@ var resetBtn = document.getElementById("reset"),
   output = document.getElementById("output");
 
 // Emit events
-
-function playSound() {
-  const audio = document.getElementById("audio");
-  if (!audio) return;
-  audio.currentTime = 0;
-  audio.play();
-}
-
 buzzBtn.addEventListener("click", function () {
   const random = Math.floor(Math.random() * emojis.length);
 
@@ -26,7 +18,14 @@ buzzBtn.addEventListener("click", function () {
     emojiNum: random,
   });
 
-  playSound();
+  const video = document.querySelector("video");
+
+  video.hidden = false;
+  video.play();
+
+  video.addEventListener("ended", (event) => {
+    video.hidden = true;
+  });
 });
 
 resetBtn.addEventListener("click", function () {
