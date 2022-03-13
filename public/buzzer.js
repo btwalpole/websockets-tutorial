@@ -33,30 +33,49 @@ resetBtn.addEventListener("click", function () {
 });
 
 //Listen for events
-socket.on("chat", function (data) {
-  output.innerHTML +=
-    "<p><strong>" +
-    data.name +
-    " </strong> buzzed first!! " +
-    emojis[data.emojiNum] +
-    " </p>";
-  buzzBtn.disabled = true;
-  buzzBtn.classList.add("disabled-buzz");
-  buzzBtn.classList.remove("enabled-buzz");
-  resetBtn.disabled = false;
-  resetBtn.classList.add("enabled-reset");
-  resetBtn.classList.remove("disabled-reset");
-  chat.scrollTop = chat.scrollHeight;
-});
-
-socket.on("reset", function () {
-  buzzBtn.disabled = false;
-  buzzBtn.classList.remove("disabled-buzz");
-  buzzBtn.classList.add("enabled-buzz");
-  resetBtn.disabled = true;
-  resetBtn.classList.add("disabled-reset");
-  resetBtn.classList.remove("enabled-reset");
-});
+console.log("userName: ", userName.value);
+if (userName.value === "bilboJenkins") {
+  socket.on("chat", function (data) {
+    output.innerHTML =
+      "<p><strong>" +
+      data.name +
+      " </strong> buzzed first!! " +
+      emojis[data.emojiNum] +
+      " </p>";
+    buzzBtn.disabled = true;
+    buzzBtn.classList.add("disabled-buzz");
+    buzzBtn.classList.remove("enabled-buzz");
+    resetBtn.disabled = false;
+    resetBtn.classList.add("enabled-reset");
+    resetBtn.classList.remove("disabled-reset");
+    //chat.scrollTop = chat.scrollHeight;
+  });
+  socket.on("reset", function () {
+    buzzBtn.disabled = false;
+    buzzBtn.classList.remove("disabled-buzz");
+    buzzBtn.classList.add("enabled-buzz");
+    resetBtn.disabled = true;
+    resetBtn.classList.remove("enabled-reset");
+    resetBtn.classList.add("disabled-reset");
+  });
+} else {
+  socket.on("chat", function (data) {
+    output.innerHTML =
+      "<p><strong>" +
+      data.name +
+      " </strong> buzzed first!! " +
+      emojis[data.emojiNum] +
+      " </p>";
+    buzzBtn.disabled = true;
+    buzzBtn.classList.add("disabled-buzz");
+    buzzBtn.classList.remove("enabled-buzz");
+  });
+  socket.on("reset", function () {
+    buzzBtn.disabled = false;
+    buzzBtn.classList.remove("disabled-buzz");
+    buzzBtn.classList.add("enabled-buzz");
+  });
+}
 
 const emojis = [
   "&#128512;",
