@@ -24,11 +24,12 @@ body{
     display: flex;
     align-items: center;
     flex-direction: column;
+    justify-content: center;
     margin: 0;
     width: 100%;
-    height: 100%;
+    height: 100vh;
+    border: 2px solid orange;
 }
-
 
 .disabled-reset {
     background: grey;
@@ -86,30 +87,41 @@ input{
 }
 
 #display{
+    margin-top: 4em;
     display: flex;
     flex-direction: column;
     width: 80vw;
     border: 1px solid #ddd;
     box-shadow: 1px 3px 5px rgba(0,0,0,0.05);
     border-radius: 2px;
-    overflow-y: auto
+    overflow-y: auto;
 }
 
 #chat-window{
-    height: 500px;
     overflow: auto;
     background: #f9f9f9;
 }
 
-#output p{
-    padding: 14px 0px;
-    margin: 0 20px;
-    border-bottom: 1px solid #e9e9e9;
-    color: #555;
+#output {
+    display: flex;
+    align-items: center;
+    justify-content: center;
     font-size: 3em;
+    height: 200px;
 }
 
-#output strong{
+#output p{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    /*padding: 14px 0px;
+    margin: 0 20px;*/
+    color: #555;
+    height: 100%;
+
+}
+
+#output #nameText {
     color: #575ed8;
 }
 

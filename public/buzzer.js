@@ -35,9 +35,9 @@ resetBtn.addEventListener("click", function () {
 //Listen for events
   socket.on("chat", function (data) {
     output.innerHTML =
-      "<p><strong>" +
+      "<p id='nameText'>" +
       data.name +
-      " </strong> buzzed first!! " +
+      "</p><p> buzzed first!!</p><p id='emoji'> " +
       emojis[data.emojiNum] +
       " </p>";
     buzzBtn.disabled = true;
