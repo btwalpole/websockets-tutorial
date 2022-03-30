@@ -13,13 +13,20 @@ var resetBtn = document.getElementById("reset"),
   newGameBtn = document.getElementById("newGameButton"),
   joinGameBtn = document.getElementById("joinGameButton"),
   gameCodeDisplay = document.getElementById("gameCodeDisplay"),
+  gameCode = document.getElementById("gameCode"),
   nameDisplay = document.getElementById("name");
-
 
 //For the start screen
 
 newGameBtn.addEventListener("click", function() {
   socket.emit('newGame', userName.value);
+})
+
+joinGameBtn.addEventListener("click", function() {
+  socket.emit('joinGame', {
+    roomName: gameCode.value,
+    userName: userName.value
+  });
 })
 
 function clear() {
@@ -48,6 +55,7 @@ buzzBtn.addEventListener("click", function () {
   socket.emit("chat", {
     name: userName.value,
     emojiNum: random,
+    roomName: gameCodeDisplay.innerText
   });
 
   const video = document.querySelector("video");
@@ -61,7 +69,7 @@ buzzBtn.addEventListener("click", function () {
 });
 
 resetBtn.addEventListener("click", function () {
-  socket.emit("reset");
+  socket.emit("reset", gameCodeDisplay.innerText);
 });
 
 //Listen for events

@@ -25,7 +25,7 @@
                     </button>
                 </form>
                 <div>OR</div>
-                <form>
+                <form onsubmit="event.preventDefault();">
                     <label for="gameCode">Game Code:</label>
                     <input id="gameCode" type="text" name="gameCode" required/> 
                     <button
@@ -41,8 +41,7 @@
                 <button id="reset" class="disabled-reset" disabled="true">Reset</button>
                 <h1>Your game code is: <span id="gameCodeDisplay"></span></h1>
                 <div>
-                    <h1>Name:</h1>
-                    <h1 id="name"></h1>
+                    <h1>Name: <span id="name"></span></h1>
                 </div>
                 
                 <div id='display'>
@@ -51,6 +50,7 @@
                     </div>
                 </div>
                 <button id="buzz" class="enabled-buzz">BUZZ ME BABY</button>
+                <div id="players"></div>
             </div>
         </div>
 
