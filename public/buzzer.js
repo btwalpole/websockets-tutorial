@@ -12,21 +12,15 @@ var resetBtn = document.getElementById("reset"),
   gameScreen = document.getElementById("gameScreen"),
   newGameBtn = document.getElementById("newGameButton"),
   joinGameBtn = document.getElementById("joinGameButton"),
-  gameCodeDisplay = document.getElementById("gameCodeDisplay");
+  gameCodeDisplay = document.getElementById("gameCodeDisplay"),
+  nameDisplay = document.getElementById("name");
+
 
 //For the start screen
 
 newGameBtn.addEventListener("click", function() {
-  //hide the intro screen a show the game screen
-  initScreen.style.display = none;
-
-  //want to start a new room
-  socket.emit('newGame', {
-    name: userName.value,
-  });
+  socket.emit('newGame', userName.value);
 })
-
-
 
 function clear() {
   gameCodeInput.value = '';
@@ -34,17 +28,17 @@ function clear() {
   gameScreen.style.display = "none";
 }
 
-
-
 //Below is for once you've joined a game
 
 socket.on('gameCode', function(gameCode) {
   gameCodeDisplay.innerText = gameCode;
 })
 
-socket.on('initQuiz', function() {
+socket.on('initQuiz', function(name) {
+  //hide the intro screen a show the game screen
   initScreen.style.display = "none";
   gameScreen.style.display = "block";
+  nameDisplay.innerHTML = name;
 })
 
 // Emit events

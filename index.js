@@ -26,21 +26,22 @@ io.on("connection", function (socket) {
   socket.on("reset", function () {
     io.sockets.emit("reset");
   });
+
+  
+  socket.on("newGame", function(userName) {
+    let roomName = '5HU76T'//makeId
+    clientRooms[socket.id] = roomName;
+
+    //send roomName back to user for display, handle this on front end
+    socket.emit('gameCode', roomName);
+
+    //define state of room, set admin as first user
+    state[roomName] = {'admin': socket.id}
+
+    socket.join(roomName);
+    socket.number = 1;
+    socket.emit('initQuiz', userName);
+  })
+
 });
 
-
-io.on("newGame", function(socket) {
-  //join current sockiet to a room
-  let roomName = '5HU76T'//makeId
-  clientRooms[socket.id] = roomName;
-
-  //send roomName back to user for display, handle this on front end
-  client.emit('gameCode', roomName);
-
-  //define state of room, set admin as first user
-  state[roomName] = {'admin': socket.id}
-
-  client.join(roomName);
-  client.number = 1;
-  client.emit('initQuiz', 1);
-})
