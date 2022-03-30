@@ -13,6 +13,9 @@ app.use(express.static("public"));
 //Socket setup
 const io = socket(server);
 
+const state = {}
+const clientRooms = {} //allows us to look up room name of a given userId
+
 io.on("connection", function (socket) {
   console.log("made socket connection", socket.id);
 
@@ -24,3 +27,20 @@ io.on("connection", function (socket) {
     io.sockets.emit("reset");
   });
 });
+
+
+io.on("newGame", function(socket) {
+  //join current sockiet to a room
+  let roomName = '5HU76T'//makeId
+  clientRooms[socket.id] = roomName;
+
+  //send roomName back to user for display, handle this on front end
+  client.emit('gameCode', roomName);
+
+  //define state of room, set admin as first user
+  state[roomName] = {'admin': socket.id}
+
+  client.join(roomName);
+  client.number = 1;
+  client.emit('initQuiz', 1);
+})

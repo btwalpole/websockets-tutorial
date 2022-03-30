@@ -4,20 +4,22 @@ const socket = io();
 
 //Query DOM
 var resetBtn = document.getElementById("reset"),
-  userName = document.getElementById("name"),
+  userName = document.getElementById("userName"),
   buzzBtn = document.getElementById("buzz"),
   chat = document.getElementById("chat-window"),
   output = document.getElementById("output"),
   initScreen = document.getElementById("initialScreen"),
+  gameScreen = document.getElementById("gameScreen"),
   newGameBtn = document.getElementById("newGameButton"),
-  joinGameBtn = document.getElementById("joinGameButton");
+  joinGameBtn = document.getElementById("joinGameButton"),
+  gameCodeDisplay = document.getElementById("gameCodeDisplay");
 
 //For the start screen
 
 newGameBtn.addEventListener("click", function() {
   //hide the intro screen a show the game screen
   initScreen.style.display = none;
-  
+
   //want to start a new room
   socket.emit('newGame', {
     name: userName.value,
@@ -26,7 +28,24 @@ newGameBtn.addEventListener("click", function() {
 
 
 
+function clear() {
+  gameCodeInput.value = '';
+  initScreen.style.display = "block";
+  gameScreen.style.display = "none";
+}
+
+
+
 //Below is for once you've joined a game
+
+socket.on('gameCode', function(gameCode) {
+  gameCodeDisplay.innerText = gameCode;
+})
+
+socket.on('initQuiz', function() {
+  initScreen.style.display = "none";
+  gameScreen.style.display = "block";
+})
 
 // Emit events
 buzzBtn.addEventListener("click", function () {
