@@ -11,18 +11,47 @@
     </head>
     <body>
         <div id='container'>
-            <button id="reset" class="disabled-reset" disabled="true">Reset</button>
-            <div id="nameInput">
-                <label for="name">Name:</label>
-                <input id="name" type="text" name="name"/>
+
+            <div id="initialScreen">
+                <h1>Epic Quiz Buzzer!</h1>
+                <form>
+                    <label for="userName">User Name:</label>
+                    <input id="userName" type="text" name="userName" required/>  
+                    <button
+                        type="submit"
+                        id="newGameButton"
+                    >
+                    Create New Game
+                    </button>
+                </form>
+                <div>OR</div>
+                <form>
+                    <label for="gameCode">Game Code:</label>
+                    <input id="gameCode" type="text" name="gameCode" required/> 
+                    <button
+                        type="submit"
+                        id="joinGameButton"
+                    >
+                    Join Game
+                    </button>
+                </form>
             </div>
-            <div id='display'>
-                <div id='chat-window'>
-                    <div id='output'></div>
+
+            <div id='gameScreen'>
+                <button id="reset" class="disabled-reset" disabled="true">Reset</button>
+                <div id="nameInput">
+                    <label for="name">Name:</label>
+                    <input id="name" type="text" name="name"/>
                 </div>
+                <div id='display'>
+                    <div id='chat-window'>
+                        <div id='output'></div>
+                    </div>
+                </div>
+                <button id="buzz" class="enabled-buzz">BUZZ ME BABY</button>
             </div>
-            <button id="buzz" class="enabled-buzz">BUZZ ME BABY</button>
         </div>
+
         <video src="patrick.mp4" preload="auto" hidden="true"></video>
         <script src='/buzzer.js'></script>
     </body>

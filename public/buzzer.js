@@ -7,7 +7,23 @@ var resetBtn = document.getElementById("reset"),
   userName = document.getElementById("name"),
   buzzBtn = document.getElementById("buzz"),
   chat = document.getElementById("chat-window"),
-  output = document.getElementById("output");
+  output = document.getElementById("output")
+  newGameBtn = document.getElementById("newGameButton")
+  joinGameBtn = document.getElementById("joinGameButton");
+
+//For the start screen
+
+newGameBtn.addEventListener("click", function() {
+  //want to start a new room
+  socket.emit('newGame', {
+    name: userName.value,
+  });
+  //hide the intro screen a show the game screen
+})
+
+
+
+//Below is for once you've joined a game
 
 // Emit events
 buzzBtn.addEventListener("click", function () {
