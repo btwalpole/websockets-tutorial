@@ -13,43 +13,49 @@ app.use(express.static("public"));
 //Socket setup
 const io = socket(server);
 
-const state = {}
-const clientRooms = {} //allows us to look up room name of a given userId
+const state = {};
+const clientRooms = {}; //allows us to look up room name of a given userId
 
 io.on("connection", function (socket) {
   console.log("made socket connection", socket.id);
 
   socket.on("chat", function (data) {
-    io.sockets.in(data.roomName).emit("chat", data);
+    console.log("someone buzzed in room ", data.roomName);
+    io.in(data.roomName).emit("chat", data);
   });
 
   socket.on("reset", function (roomName) {
-    io.sockets.in(roomName).emit("reset");
+    io.in(roomName).emit("reset");
   });
-  
-  socket.on("newGame", function(userName) {
+
+  socket.on("newGame", function (userName) {
+    console.log("starting new game");
     let roomName = makeid(5);
     clientRooms[socket.id] = roomName;
 
     //send roomName back to user for display, handle this on front end
-    socket.emit('gameCode', roomName);
+    socket.emit("gameCode", roomName);
 
     //define state of room, set admin as first user
-    state[roomName] = {'admin': socket.id}
+    state[roomName] = { admin: socket.id };
 
     socket.join(roomName);
     socket.number = 1;
-    socket.emit('initQuiz', userName);
-  })
+    socket.emit("initQuiz", userName);
+  });
 
-  socket.on("joinGame", function(data) {
+  socket.on("joinGame", function (data) {
+    console.log("trying to join room ", data.roomName);
+    /*
     const room = io.sockets.adapter.rooms[data.roomName];
+    console.log("room: ", room);
 
     let allUsers;
     //check there is actually a room with this game code
     if (room) {
-       //gives a object where key is socket id and value is socket object
+      //gives a object where key is socket id and value is socket object
       allUsers = room.sockets;
+      console.log("there is indeed a room called ", data.roomName);
     }
 
     let numClients = 0;
@@ -59,24 +65,28 @@ io.on("connection", function (socket) {
     }
 
     if (numClients === 0) {
-      socket.emit('unknownCode');
+      socket.emit("unknownCode");
       return;
     }
 
-    clientRooms[client.id] = data.roomName;
+    console.log("someone is in the room already");
+    */
+    clientRooms[socket.id] = data.roomName;
+    console.log("now joining ", data.roomName);
     socket.join(data.roomName);
-    socket.emit('initQuiz', data.userName);
+    socket.emit("initQuiz", data.userName);
+    socket.emit("gameCode", data.roomName);
     //add to list of players in the room?
-  })
-
+  });
 });
 
 function makeid(length) {
-  var result = '';
-  var characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  var result = "";
+  var characters =
+    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
   var charactersLength = characters.length;
-  for ( var i = 0; i < length; i++ ) {
-     result += characters.charAt(Math.floor(Math.random() * charactersLength));
+  for (var i = 0; i < length; i++) {
+    result += characters.charAt(Math.floor(Math.random() * charactersLength));
   }
   return result;
 }
