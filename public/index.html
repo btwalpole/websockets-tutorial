@@ -15,8 +15,6 @@
             <div id="initialScreen">
                 <h1>Epic Quiz Buzzer!</h1>
                 <form onsubmit="event.preventDefault();">
-                    <label for="userName">User Name:</label>
-                    <input id="userName" type="text" name="userName" required/>  
                     <button
                         type="submit"
                         id="newGameButton"
@@ -33,6 +31,32 @@
                         id="joinGameButton"
                     >
                     Join Game
+                    </button>
+                </form>
+            </div>
+
+            <div id='enterNameScreen-Create'>
+                <form onsubmit="event.preventDefault();">
+                    <label for="userName">User Name:</label>
+                    <input id="userName" type="text" name="userName" required/>  
+                    <button
+                        type="submit"
+                        id="submitNameButton"
+                    >
+                    Create New Game
+                    </button>
+                </form>
+            </div>
+
+            <div id='enterNameScreen-Join'>
+                <form onsubmit="event.preventDefault();">
+                    <label for="userName">User Name:</label>
+                    <input id="userName" type="text" name="userName" required/>  
+                    <button
+                        type="submit"
+                        id="submitNameButton"
+                    >
+                    Create New Game
                     </button>
                 </form>
             </div>

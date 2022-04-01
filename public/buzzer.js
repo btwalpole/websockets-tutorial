@@ -10,7 +10,9 @@ var resetBtn = document.getElementById("reset"),
   output = document.getElementById("output"),
   initScreen = document.getElementById("initialScreen"),
   gameScreen = document.getElementById("gameScreen"),
+  enterNameScreen = document.getElementById("enterNameScreen"),
   newGameBtn = document.getElementById("newGameButton"),
+  submitNameBtn = document.getElementById("submitNameButton"),
   joinGameBtn = document.getElementById("joinGameButton"),
   gameCodeDisplay = document.getElementById("gameCodeDisplay"),
   gameCode = document.getElementById("gameCode"),
@@ -19,14 +21,15 @@ var resetBtn = document.getElementById("reset"),
 //For the start screen
 
 newGameBtn.addEventListener("click", function() {
+  socket.emit('promptUsername');
+})
+
+submitNameBtn.addEventListener("click", function() {
   socket.emit('newGame', userName.value);
 })
 
 joinGameBtn.addEventListener("click", function() {
-  socket.emit('joinGame', {
-    roomName: gameCode.value,
-    userName: userName.value
-  });
+  socket.emit('searchGame', gameCode.value);
 })
 
 function clear() {
@@ -34,6 +37,16 @@ function clear() {
   initScreen.style.display = "block";
   gameScreen.style.display = "none";
 }
+
+socket.on('joinerDisplayEnterNameScreen', (roomName) => {
+  initScreen.style.display = "none";
+  enterNameScreen.style.display = "block";
+})
+
+socket.on('displayEnterNameScreen', () => {
+  initScreen.style.display = "none";
+  enterNameScreen.style.display = "block";
+})
 
 //Below is for once you've joined a game
 
@@ -44,6 +57,7 @@ socket.on('gameCode', function(gameCode) {
 socket.on('initQuiz', function(name) {
   //hide the intro screen a show the game screen
   initScreen.style.display = "none";
+  enterNameScreen.style.display = "none";
   gameScreen.style.display = "block";
   nameDisplay.innerHTML = name;
 })
