@@ -35,6 +35,10 @@ body{
     display: none;
 }
 
+#enterNameScreen-Join {
+    display: none;
+}
+
 #gameScreen {
     display: none;
 }

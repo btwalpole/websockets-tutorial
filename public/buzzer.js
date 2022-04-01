@@ -11,8 +11,13 @@ var resetBtn = document.getElementById("reset"),
   initScreen = document.getElementById("initialScreen"),
   gameScreen = document.getElementById("gameScreen"),
   enterNameScreen = document.getElementById("enterNameScreen"),
+  enterNameScreenJoin = document.getElementById("enterNameScreen-Join"),
+  roomNameCreate = document.getElementById("roomNameCreate"),
+  roomNameJoin = document.getElementById("roomNameJoin"),
+  userNameJoin = document.getElementById("userNameJoin"),
   newGameBtn = document.getElementById("newGameButton"),
   submitNameBtn = document.getElementById("submitNameButton"),
+  submitNameJoinBtn = document.getElementById("submitNameButton-Join"),
   joinGameBtn = document.getElementById("joinGameButton"),
   gameCodeDisplay = document.getElementById("gameCodeDisplay"),
   gameCode = document.getElementById("gameCode"),
@@ -25,7 +30,20 @@ newGameBtn.addEventListener("click", function() {
 })
 
 submitNameBtn.addEventListener("click", function() {
-  socket.emit('newGame', userName.value);
+  console.log('name: ', userName.value);
+  console.log('room: ', roomNameCreate.value);
+
+  socket.emit('newGame', {
+    userName: userName.value,
+    roomName: roomNameCreate.value
+  });
+})
+
+submitNameJoinBtn.addEventListener("click", function() {
+  socket.emit('joinGame', {
+    username: userNameJoin.value,
+    roomName: roomNameCreate.value
+  });
 })
 
 joinGameBtn.addEventListener("click", function() {
@@ -38,14 +56,16 @@ function clear() {
   gameScreen.style.display = "none";
 }
 
-socket.on('joinerDisplayEnterNameScreen', (roomName) => {
+socket.on('displayEnterNameScreen', (roomName) => {
+  roomNameCreate.innerText = roomName;
   initScreen.style.display = "none";
   enterNameScreen.style.display = "block";
 })
 
-socket.on('displayEnterNameScreen', () => {
+socket.on('displayEnterNameScreen-Join', (roomName) => {
+  roomNameJoin.innerText = roomName;
   initScreen.style.display = "none";
-  enterNameScreen.style.display = "block";
+  enterNameScreenJoin.style.display = "block";
 })
 
 //Below is for once you've joined a game
@@ -58,6 +78,7 @@ socket.on('initQuiz', function(name) {
   //hide the intro screen a show the game screen
   initScreen.style.display = "none";
   enterNameScreen.style.display = "none";
+  enterNameScreenJoin.style.display = "none";
   gameScreen.style.display = "block";
   nameDisplay.innerHTML = name;
 })

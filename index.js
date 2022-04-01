@@ -30,13 +30,12 @@ io.on("connection", function (socket) {
 
   socket.on("promptUsername", () => {
     console.log("prompting user to enter name")
-    socket.emit('displayEnterNameScreen');
+    let roomName = makeid(5);
+    socket.emit('displayEnterNameScreen', roomName);
   })
 
-  socket.on("newGame", function (userName) {
+  socket.on("newGame", function ({userName, roomName}) {
     console.log("starting new game");
-    
-    let roomName = makeid(5);
     clientRooms[socket.id] = roomName;
 
     //define state of room, set admin as first user
@@ -45,7 +44,6 @@ io.on("connection", function (socket) {
     socket.join(roomName);
     socket.number = 1;
     socket.emit("initQuiz", userName);
-
     //send roomName back to user for display, handle this on front end
     socket.emit("gameCode", roomName);
   });
@@ -79,16 +77,16 @@ io.on("connection", function (socket) {
     console.log("someone is in the room already");
     */
    //IF ROOM IS VALID, GO TO ENTER NAME SCREEN
-   socket.emit("joinerDisplayEnterNameScreen", roomName);
+   socket.emit("displayEnterNameScreen-Join", roomName);
   });
 
-  socket.on("joinGame", function (data) {
+  socket.on("joinGame", function ({username, roomName}) {
     
-    clientRooms[socket.id] = data.roomName;
-    console.log("now joining ", data.roomName);
-    socket.join(data.roomName);
-    socket.emit("initQuiz", data.userName);
-    socket.emit("gameCode", data.roomName);
+    clientRooms[socket.id] = roomName;
+    console.log("now joining ", roomName);
+    socket.join(roomName);
+    socket.emit("initQuiz", userName);
+    socket.emit("gameCode", roomName);
     //add to list of players in the room?
   });
 });

@@ -35,7 +35,10 @@
                 </form>
             </div>
 
-            <div id='enterNameScreen-Create'>
+            <div id='enterNameScreen'>
+                <div>
+                    <h1>Creating Game: <span id="roomNameCreate"></span></h1>
+                </div>
                 <form onsubmit="event.preventDefault();">
                     <label for="userName">User Name:</label>
                     <input id="userName" type="text" name="userName" required/>  
@@ -49,12 +52,15 @@
             </div>
 
             <div id='enterNameScreen-Join'>
+                <div>
+                    <h1>Joining Game: <span id="roomNameJoin"></span></h1>
+                </div>
                 <form onsubmit="event.preventDefault();">
-                    <label for="userName">User Name:</label>
-                    <input id="userName" type="text" name="userName" required/>  
+                    <label for="userNameJoin">User Name:</label>
+                    <input id="userNameJoin" type="text" name="userNameJoin" required/>  
                     <button
                         type="submit"
-                        id="submitNameButton"
+                        id="submitNameButton-Join"
                     >
                     Create New Game
                     </button>
