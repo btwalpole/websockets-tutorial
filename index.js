@@ -19,9 +19,11 @@ const clientRooms = {}; //allows us to look up room name of a given userId
 io.on("connection", function (socket) {
   console.log("made socket connection", socket.id);
 
-  socket.on("chat", function (data) {
-    console.log("someone buzzed in room ", data.roomName);
-    io.in(data.roomName).emit("chat", data);
+  socket.on("buzz", function (data) {
+    console.log('this person buzzed: ', data.name)
+    console.log("they buzzed in this room ", data.roomName);
+    console.log('admin of this room is: ', state[data.roomName].admin)
+    io.in(data.roomName).emit("buzzed", {...data, admin: state[data.roomName].admin});
   });
 
   socket.on("reset", function (roomName) {

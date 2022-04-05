@@ -23,7 +23,8 @@ var resetBtn = document.getElementById("reset"),
   gameCode = document.getElementById("gameCode"),
   nameDisplay = document.getElementById("name");
 
-//For the start screen
+
+//// Setting up the game
 
 newGameBtn.addEventListener("click", function() {
   socket.emit('promptUsername');
@@ -93,12 +94,14 @@ socket.on('initQuiz', function(name) {
   nameDisplay.innerText = name;
 })
 
+//// Using the buzzer
+
 // Emit events
 buzzBtn.addEventListener("click", function () {
   const random = Math.floor(Math.random() * emojis.length);
 
-  socket.emit("chat", {
-    name: userName.value,
+  socket.emit("buzz", {
+    name: nameDisplay.innerText,
     emojiNum: random,
     roomName: gameCodeDisplay.innerText
   });
@@ -118,7 +121,9 @@ resetBtn.addEventListener("click", function () {
 });
 
 //Listen for events
-  socket.on("chat", function (data) {
+  socket.on("buzzed", function (data) {
+    console.log('current socket id: ', socket.id)
+    console.log('admin socket id: ', data.admin)
     output.innerHTML =
       "<p id='nameText'>" +
       data.name +
