@@ -23,7 +23,7 @@ io.on("connection", function (socket) {
     console.log('this person buzzed: ', data.name)
     console.log("they buzzed in this room ", data.roomName);
     console.log('admin of this room is: ', state[data.roomName].admin)
-    io.in(data.roomName).emit("buzzed", {...data, admin: state[data.roomName].admin});
+    io.to(data.roomName).emit("buzzed", {...data, admin: state[data.roomName].admin});
   });
 
   socket.on("reset", function (roomName) {

@@ -124,6 +124,14 @@ resetBtn.addEventListener("click", function () {
   socket.on("buzzed", function (data) {
     console.log('current socket id: ', socket.id)
     console.log('admin socket id: ', data.admin)
+
+    if(socket.id === data.admin) {
+      console.log('you are the admin!')
+      resetBtn.disabled = false;
+      resetBtn.classList.add("enabled-reset");
+      resetBtn.classList.remove("disabled-reset");
+    }
+
     output.innerHTML =
       "<p id='nameText'>" +
       data.name +
@@ -133,14 +141,6 @@ resetBtn.addEventListener("click", function () {
     buzzBtn.disabled = true;
     buzzBtn.classList.add("disabled-buzz");
     buzzBtn.classList.remove("enabled-buzz");
-    console.log("userName: ", userName.value);
-
-    if (userName.value === "bilboJenkins") {
-      console.log("admin userName: ", userName.value);
-      resetBtn.disabled = false;
-      resetBtn.classList.add("enabled-reset");
-      resetBtn.classList.remove("disabled-reset");
-    }
     //chat.scrollTop = chat.scrollHeight;
   });
 
