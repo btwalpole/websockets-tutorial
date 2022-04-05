@@ -85,13 +85,16 @@ socket.on('showGameCode', function(roomName) {
   gameCodeDisplay.innerText = roomName;
 })
 
-socket.on('initQuiz', function(name) {
+socket.on('initQuiz', function(data) {
   //hide the intro screen a show the game screen
   initScreen.style.display = "none";
   enterNameScreen.style.display = "none";
   enterNameScreenJoin.style.display = "none";
   gameScreen.style.display = "block";
-  nameDisplay.innerText = name;
+  nameDisplay.innerText = data.name;
+  if(socket.id === data.admin) {
+    resetBtn.style.display = "block"
+  }
 })
 
 //// Using the buzzer

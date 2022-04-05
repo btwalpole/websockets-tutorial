@@ -45,7 +45,7 @@ io.on("connection", function (socket) {
 
     socket.join(roomName);
     socket.number = 1;
-    socket.emit("initQuiz", userName);
+    socket.emit("initQuiz", {name: userName, admin: state[roomName].admin});
     //send roomName back to user for display, handle this on front end
     socket.emit("showGameCode", roomName);
   });
@@ -87,7 +87,9 @@ io.on("connection", function (socket) {
     clientRooms[socket.id] = roomName;
     console.log("now joining ", roomName);
     socket.join(roomName);
-    socket.emit("initQuiz", userName);
+    console.log('user: ' + userName + ' is joining room ' + roomName)
+    console.log('admin of this room is: ', state[roomName].admin)
+    socket.emit("initQuiz", {name: userName, admin: state[roomName].admin});
     socket.emit("showGameCode", roomName);
     //add to list of players in the room?
   });
