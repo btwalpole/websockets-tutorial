@@ -45,7 +45,7 @@ io.on("connection", function (socket) {
     socket.number = 1;
     socket.emit("initQuiz", userName);
     //send roomName back to user for display, handle this on front end
-    socket.emit("gameCode", roomName);
+    socket.emit("showGameCode", roomName);
   });
 
   socket.on("searchGame", function(roomName) {
@@ -80,13 +80,13 @@ io.on("connection", function (socket) {
    socket.emit("displayEnterNameScreen-Join", roomName);
   });
 
-  socket.on("joinGame", function ({username, roomName}) {
+  socket.on("joinGame", function ({userName, roomName}) {
     
     clientRooms[socket.id] = roomName;
     console.log("now joining ", roomName);
     socket.join(roomName);
     socket.emit("initQuiz", userName);
-    socket.emit("gameCode", roomName);
+    socket.emit("showGameCode", roomName);
     //add to list of players in the room?
   });
 });

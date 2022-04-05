@@ -31,23 +31,30 @@ newGameBtn.addEventListener("click", function() {
 
 submitNameBtn.addEventListener("click", function() {
   console.log('name: ', userName.value);
-  console.log('room: ', roomNameCreate.value);
+  console.log('room: ', roomNameCreate.innerText);
 
   socket.emit('newGame', {
     userName: userName.value,
-    roomName: roomNameCreate.value
+    roomName: roomNameCreate.innerText
   });
 })
 
 submitNameJoinBtn.addEventListener("click", function() {
+  console.log('joining with name: ', userNameJoin.value);
+  console.log('joining room: ', roomNameJoin.innerText);
+
   socket.emit('joinGame', {
-    username: userNameJoin.value,
+    userName: userNameJoin.value,
     roomName: roomNameCreate.value
   });
 })
 
 joinGameBtn.addEventListener("click", function() {
-  socket.emit('searchGame', gameCode.value);
+  if(gameCode.value != '') {
+    socket.emit('searchGame', gameCode.value);
+  } else {
+      console.log('game code field is empty')
+  }
 })
 
 function clear() {
@@ -58,20 +65,23 @@ function clear() {
 
 socket.on('displayEnterNameScreen', (roomName) => {
   roomNameCreate.innerText = roomName;
+  console.log('about to enter user name for creating room: ', roomNameCreate.innerText)
   initScreen.style.display = "none";
   enterNameScreen.style.display = "block";
 })
 
 socket.on('displayEnterNameScreen-Join', (roomName) => {
   roomNameJoin.innerText = roomName;
+  console.log('about to enter user name for joining room: ', roomNameJoin.innerText)
   initScreen.style.display = "none";
   enterNameScreenJoin.style.display = "block";
 })
 
 //Below is for once you've joined a game
 
-socket.on('gameCode', function(gameCode) {
-  gameCodeDisplay.innerText = gameCode;
+socket.on('showGameCode', function(roomName) {
+  console.log('showing the game code: ', roomName)
+  gameCodeDisplay.innerText = roomName;
 })
 
 socket.on('initQuiz', function(name) {
@@ -80,7 +90,7 @@ socket.on('initQuiz', function(name) {
   enterNameScreen.style.display = "none";
   enterNameScreenJoin.style.display = "none";
   gameScreen.style.display = "block";
-  nameDisplay.innerHTML = name;
+  nameDisplay.innerText = name;
 })
 
 // Emit events
