@@ -45,7 +45,7 @@ submitNameJoinBtn.addEventListener("click", function() {
 
   socket.emit('joinGame', {
     userName: userNameJoin.value,
-    roomName: roomNameCreate.value
+    roomName: roomNameJoin.innerText
   });
 })
 
