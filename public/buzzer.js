@@ -148,14 +148,13 @@ resetBtn.addEventListener("click", function () {
   });
 
   socket.on("reset", function () {
+    //these changes are only visible to the admin user, button is invisble to all others
     buzzBtn.disabled = false;
     buzzBtn.classList.remove("disabled-buzz");
     buzzBtn.classList.add("enabled-buzz");
-    if (userName.value === "bilboJenkins") {
-      resetBtn.disabled = true;
-      resetBtn.classList.remove("enabled-reset");
-      resetBtn.classList.add("disabled-reset");
-    }
+    resetBtn.disabled = true;
+    resetBtn.classList.remove("enabled-reset");
+    resetBtn.classList.add("disabled-reset");
   });
 
 const emojis = [
