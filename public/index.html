@@ -13,26 +13,29 @@
         <div id='container'>
 
             <div id="initialScreen">
-                <h1>Epic Quiz Buzzer!</h1>
-                <form onsubmit="event.preventDefault();">
-                    <button
-                        type="submit"
-                        id="newGameButton"
-                    >
-                    Create New Game
-                    </button>
-                </form>
-                <div>OR</div>
-                <form onsubmit="event.preventDefault();">
-                    <label for="gameCode">Game Code:</label>
-                    <input id="gameCode" type="text" name="gameCode" required/> 
-                    <button
-                        type="submit"
-                        id="joinGameButton"
-                    >
-                    Join Game
-                    </button>
-                </form>
+                <h1>Benji's Cool Quiz Buzzer &#128526;</h1>
+                <div id="initialForms">
+                    <form onsubmit="event.preventDefault();">
+                        <button
+                            type="submit"
+                            id="newGameButton"
+                        >
+                        Create New Game
+                        </button>
+                    </form>
+                    <h2>OR</h2>
+                    <form id='initialJoinForm' onsubmit="event.preventDefault();">
+                        <label for="gameCode">Enter Game Code:</label>
+                        <input id="gameCode" type="text" name="gameCode" required/> 
+                        <button
+                            type="submit"
+                            id="joinGameButton"
+                        >
+                        Join Game
+                        </button>
+                    </form>
+                </div>
+                
             </div>
 
             <div id='enterNameScreen'>
