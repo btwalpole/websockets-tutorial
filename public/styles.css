@@ -4,13 +4,14 @@
     padding: 0;
     margin: 0;
   }
-/*
+  
+  /*
   * {
     background: #000 !important;
     color: #0f0 !important;
     outline: solid #f00 1px !important;
-  }
-*/
+  } */
+
 body{
     font-family: 'Roboto', sans-serif;
     height: 100vh;
@@ -32,6 +33,26 @@ body{
 
 #enterNameScreen {
     display: none;
+    height: 50vh;
+    align-items: center;
+    flex-direction: column;
+    justify-content: center;
+}
+
+#submitNameButton {
+    display: flex;
+    width: auto;
+    font-size: 2em;
+    margin: 1em;
+}
+
+#enterNameCreateForm {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    justify-content: center;
+    padding: 1em 1em;
+    margin: 1em 1em;
 }
 
 #enterNameScreen-Join {
@@ -48,7 +69,7 @@ body{
     flex-direction: column;
     justify-content: space-around;
     font-family: inherit;
-    height: 90vh;
+    height: 60vh;
     width: 95vw;
 }
 

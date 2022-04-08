@@ -68,7 +68,7 @@ socket.on('displayEnterNameScreen', (roomName) => {
   roomNameCreate.innerText = roomName;
   console.log('about to enter user name for creating room: ', roomNameCreate.innerText)
   initScreen.style.display = "none";
-  enterNameScreen.style.display = "block";
+  enterNameScreen.style.display = "flex";
 })
 
 socket.on('displayEnterNameScreen-Join', (roomName) => {

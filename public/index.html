@@ -39,10 +39,8 @@
             </div>
 
             <div id='enterNameScreen'>
-                <div>
-                    <h1>Creating Game: <span id="roomNameCreate"></span></h1>
-                </div>
-                <form onsubmit="event.preventDefault();">
+                <h1>Creating Game: <span id="roomNameCreate"></span></h1>
+                <form id="enterNameCreateForm" onsubmit="event.preventDefault();">
                     <label for="userName">Enter your name:</label>
                     <input id="userName" type="text" name="userName" required/>  
                     <button
