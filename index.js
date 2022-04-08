@@ -41,7 +41,7 @@ io.on("connection", function (socket) {
     clientRooms[socket.id] = roomName;
 
     //define state of room, set admin as first user
-    state[roomName] = { admin: socket.id };
+    state[roomName] = { admin: socket.id, users: [userName]};
 
     socket.join(roomName);
     socket.number = 1;
@@ -85,6 +85,7 @@ io.on("connection", function (socket) {
   socket.on("joinGame", function ({userName, roomName}) {
     
     clientRooms[socket.id] = roomName;
+    state[roomName].users.push(userName);
     console.log("now joining ", roomName);
     socket.join(roomName);
     console.log('user: ' + userName + ' is joining room ' + roomName)
@@ -92,6 +93,9 @@ io.on("connection", function (socket) {
     socket.emit("initQuiz", {name: userName, admin: state[roomName].admin});
     socket.emit("showGameCode", roomName);
     //add to list of players in the room?
+
+    //get list of 
+    socket.emit("updatePlayerList", state[roomName].users);
   });
 });
 
