@@ -11,18 +11,83 @@
     </head>
     <body>
         <div id='container'>
-            <button id="reset" class="disabled-reset" disabled="true">Reset</button>
-            <div id="nameInput">
-                <label for="name">Name:</label>
-                <input id="name" type="text" name="name"/>
+
+            <div id="initialScreen">
+                <h1>Benji's Cool Quiz Buzzer &#128526;</h1>
+                <div id="initialForms">
+                    <form onsubmit="event.preventDefault();">
+                        <button
+                            type="submit"
+                            id="newGameButton"
+                        >
+                        Create New Game
+                        </button>
+                    </form>
+                    <h2>OR</h2>
+                    <form id='initialJoinForm' onsubmit="event.preventDefault();">
+                        <label for="gameCode">Enter Game Code:</label>
+                        <input id="gameCode" type="text" name="gameCode" required/> 
+                        <button
+                            type="submit"
+                            id="joinGameButton"
+                        >
+                        Join Game
+                        </button>
+                    </form>
+                </div>
+                
             </div>
-            <div id='display'>
-                <div id='chat-window'>
-                    <div id='output'></div>
+
+            <div id='enterNameScreen'>
+                <h1>Creating Game: <span id="roomNameCreate"></span></h1>
+                <form id="enterNameCreateForm" onsubmit="event.preventDefault();">
+                    <label for="userName">Enter your name:</label>
+                    <input id="userName" type="text" name="userName" required/>  
+                    <button
+                        type="submit"
+                        id="submitNameButton"
+                    >
+                    Create New Game
+                    </button>
+                </form>
+            </div>
+
+            <div id='enterNameScreen-Join'>
+                <div>
+                    <h1>Joining Game: <span id="roomNameJoin"></span></h1>
+                </div>
+                <form id="enterNameJoinForm" onsubmit="event.preventDefault();">
+                    <label for="userNameJoin">Enter your name:</label>
+                    <input id="userNameJoin" type="text" name="userNameJoin" required/>  
+                    <button
+                        type="submit"
+                        id="submitNameButton-Join"
+                    >
+                    Join Game
+                    </button>
+                </form>
+            </div>
+
+            <div id='gameScreen'>
+                <button id="reset" class="disabled-reset" disabled="true">Reset</button>
+                <h1>Your game code is: <span id="gameCodeDisplay"></span></h1>
+                <div>
+                    <h1>Name: <span id="name"></span></h1>
+                </div>
+                
+                <div id='display'>
+                    <div id='chat-window'>
+                        <div id='output'></div>
+                    </div>
+                </div>
+                <button id="buzz" class="enabled-buzz">BUZZ ME BABY</button>
+                <div id="playersContainer">
+                    <h2>Players:</h2>
+                    <ul id="players"></ul>
                 </div>
             </div>
-            <button id="buzz" class="enabled-buzz">BUZZ ME BABY</button>
         </div>
+
         <video src="patrick.mp4" preload="auto" hidden="true"></video>
         <script src='/buzzer.js'></script>
     </body>
