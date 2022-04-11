@@ -21,81 +21,96 @@ var resetBtn = document.getElementById("reset"),
   joinGameBtn = document.getElementById("joinGameButton"),
   gameCodeDisplay = document.getElementById("gameCodeDisplay"),
   gameCode = document.getElementById("gameCode"),
-  nameDisplay = document.getElementById("name");
-
+  nameDisplay = document.getElementById("name"),
+  playersDisplay = document.getElementById("players");
 
 //// Setting up the game
 
-newGameBtn.addEventListener("click", function() {
-  socket.emit('promptUsername');
-})
+newGameBtn.addEventListener("click", function () {
+  socket.emit("promptUsername");
+});
 
-submitNameBtn.addEventListener("click", function() {
-  console.log('name: ', userName.value);
-  console.log('room: ', roomNameCreate.innerText);
+submitNameBtn.addEventListener("click", function () {
+  console.log("name: ", userName.value);
+  console.log("room: ", roomNameCreate.innerText);
 
-  socket.emit('newGame', {
+  socket.emit("newGame", {
     userName: userName.value,
-    roomName: roomNameCreate.innerText
+    roomName: roomNameCreate.innerText,
   });
-})
+});
 
-submitNameJoinBtn.addEventListener("click", function() {
-  console.log('joining with name: ', userNameJoin.value);
-  console.log('joining room: ', roomNameJoin.innerText);
+submitNameJoinBtn.addEventListener("click", function () {
+  console.log("joining with name: ", userNameJoin.value);
+  console.log("joining room: ", roomNameJoin.innerText);
 
-  socket.emit('joinGame', {
+  socket.emit("joinGame", {
     userName: userNameJoin.value,
-    roomName: roomNameJoin.innerText
+    roomName: roomNameJoin.innerText,
   });
-})
+});
 
-joinGameBtn.addEventListener("click", function() {
-  if(gameCode.value != '') {
-    socket.emit('searchGame', gameCode.value);
+joinGameBtn.addEventListener("click", function () {
+  if (gameCode.value != "") {
+    socket.emit("searchGame", gameCode.value);
   } else {
-      console.log('game code field is empty')
+    console.log("game code field is empty");
   }
-})
+});
 
 function clear() {
-  gameCodeInput.value = '';
+  gameCodeInput.value = "";
   initScreen.style.display = "block";
   gameScreen.style.display = "none";
 }
 
-socket.on('displayEnterNameScreen', (roomName) => {
+socket.on("displayEnterNameScreen", (roomName) => {
   roomNameCreate.innerText = roomName;
-  console.log('about to enter user name for creating room: ', roomNameCreate.innerText)
+  console.log(
+    "about to enter user name for creating room: ",
+    roomNameCreate.innerText
+  );
   initScreen.style.display = "none";
   enterNameScreen.style.display = "flex";
-})
+});
 
-socket.on('displayEnterNameScreen-Join', (roomName) => {
+socket.on("displayEnterNameScreen-Join", (roomName) => {
   roomNameJoin.innerText = roomName;
-  console.log('about to enter user name for joining room: ', roomNameJoin.innerText)
+  console.log(
+    "about to enter user name for joining room: ",
+    roomNameJoin.innerText
+  );
   initScreen.style.display = "none";
   enterNameScreenJoin.style.display = "block";
-})
+});
 
 //Below is for once you've joined a game
 
-socket.on('showGameCode', function(roomName) {
-  console.log('showing the game code: ', roomName)
+socket.on("showGameCode", function (roomName) {
+  console.log("showing the game code: ", roomName);
   gameCodeDisplay.innerText = roomName;
-})
+});
 
-socket.on('initQuiz', function(data) {
+socket.on("initQuiz", function (data) {
   //hide the intro screen a show the game screen
   initScreen.style.display = "none";
   enterNameScreen.style.display = "none";
   enterNameScreenJoin.style.display = "none";
   gameScreen.style.display = "block";
   nameDisplay.innerText = data.name;
-  if(socket.id === data.admin) {
-    resetBtn.style.display = "block"
+  if (socket.id === data.admin) {
+    resetBtn.style.display = "block";
   }
-})
+});
+
+socket.on("updatePlayerList", function (players) {
+  console.log("recieved new players list: ", players);
+  playersDisplay.replaceChildren();
+  players.forEach((element) => {
+    let p = document.createElement("p");
+    playersDisplay.append(element, p);
+  });
+});
 
 //// Using the buzzer
 
@@ -106,7 +121,7 @@ buzzBtn.addEventListener("click", function () {
   socket.emit("buzz", {
     name: nameDisplay.innerText,
     emojiNum: random,
-    roomName: gameCodeDisplay.innerText
+    roomName: gameCodeDisplay.innerText,
   });
 
   const video = document.querySelector("video");
@@ -124,38 +139,38 @@ resetBtn.addEventListener("click", function () {
 });
 
 //Listen for events
-  socket.on("buzzed", function (data) {
-    console.log('current socket id: ', socket.id)
-    console.log('admin socket id: ', data.admin)
+socket.on("buzzed", function (data) {
+  console.log("current socket id: ", socket.id);
+  console.log("admin socket id: ", data.admin);
 
-    if(socket.id === data.admin) {
-      console.log('you are the admin!')
-      resetBtn.disabled = false;
-      resetBtn.classList.add("enabled-reset");
-      resetBtn.classList.remove("disabled-reset");
-    }
+  if (socket.id === data.admin) {
+    console.log("you are the admin!");
+    resetBtn.disabled = false;
+    resetBtn.classList.add("enabled-reset");
+    resetBtn.classList.remove("disabled-reset");
+  }
 
-    output.innerHTML =
-      "<p id='nameText'>" +
-      data.name +
-      "</p><p> buzzed first!!</p><p id='emoji'> " +
-      emojis[data.emojiNum] +
-      " </p>";
-    buzzBtn.disabled = true;
-    buzzBtn.classList.add("disabled-buzz");
-    buzzBtn.classList.remove("enabled-buzz");
-    //chat.scrollTop = chat.scrollHeight;
-  });
+  output.innerHTML =
+    "<p id='nameText'>" +
+    data.name +
+    "</p><p> buzzed first!!</p><p id='emoji'> " +
+    emojis[data.emojiNum] +
+    " </p>";
+  buzzBtn.disabled = true;
+  buzzBtn.classList.add("disabled-buzz");
+  buzzBtn.classList.remove("enabled-buzz");
+  //chat.scrollTop = chat.scrollHeight;
+});
 
-  socket.on("reset", function () {
-    //these changes are only visible to the admin user, button is invisble to all others
-    buzzBtn.disabled = false;
-    buzzBtn.classList.remove("disabled-buzz");
-    buzzBtn.classList.add("enabled-buzz");
-    resetBtn.disabled = true;
-    resetBtn.classList.remove("enabled-reset");
-    resetBtn.classList.add("disabled-reset");
-  });
+socket.on("reset", function () {
+  //these changes are only visible to the admin user, button is invisble to all others
+  buzzBtn.disabled = false;
+  buzzBtn.classList.remove("disabled-buzz");
+  buzzBtn.classList.add("enabled-buzz");
+  resetBtn.disabled = true;
+  resetBtn.classList.remove("enabled-reset");
+  resetBtn.classList.add("disabled-reset");
+});
 
 const emojis = [
   "&#128512;",
