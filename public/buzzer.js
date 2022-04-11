@@ -60,7 +60,7 @@ joinGameBtn.addEventListener("click", function () {
 
 function clear() {
   gameCodeInput.value = "";
-  initScreen.style.display = "block";
+  initScreen.style.display = "flex";
   gameScreen.style.display = "none";
 }
 
@@ -81,7 +81,7 @@ socket.on("displayEnterNameScreen-Join", (roomName) => {
     roomNameJoin.innerText
   );
   initScreen.style.display = "none";
-  enterNameScreenJoin.style.display = "block";
+  enterNameScreenJoin.style.display = "flex";
 });
 
 //Below is for once you've joined a game
@@ -96,19 +96,20 @@ socket.on("initQuiz", function (data) {
   initScreen.style.display = "none";
   enterNameScreen.style.display = "none";
   enterNameScreenJoin.style.display = "none";
-  gameScreen.style.display = "block";
+  gameScreen.style.display = "flex";
   nameDisplay.innerText = data.name;
   if (socket.id === data.admin) {
-    resetBtn.style.display = "block";
+    resetBtn.style.display = "flex";
   }
 });
 
 socket.on("updatePlayerList", function (players) {
   console.log("recieved new players list: ", players);
   playersDisplay.replaceChildren();
-  players.forEach((element) => {
-    let p = document.createElement("p");
-    playersDisplay.append(element, p);
+  players.forEach((playerName) => {
+    let li = document.createElement("li");
+    playersDisplay.append(li);
+    li.innerText = playerName;
   });
 });
 
@@ -153,7 +154,7 @@ socket.on("buzzed", function (data) {
   output.innerHTML =
     "<p id='nameText'>" +
     data.name +
-    "</p><p> buzzed first!!</p><p id='emoji'> " +
+    "</p><p>   buzzed first!!</p><p id='emoji'> " +
     emojis[data.emojiNum] +
     " </p>";
   buzzBtn.disabled = true;

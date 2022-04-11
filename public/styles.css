@@ -61,6 +61,39 @@ body{
 
 #gameScreen {
     display: none;
+    align-items: center;
+    flex-direction: column;
+    justify-content: space-around;
+}
+
+#gameScreen #display {
+    border-radius: 3px;
+}
+
+#playersContainer {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    width: 80%;
+}
+
+#playersContainer h2{
+    font-size: 4em;
+}
+
+#playersContainer ul, h2{
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    width: 100%;
+}
+
+#playersContainer li{
+    font-size: 3em;
+    display: list-item;
+    margin: .1em;
+    width: 50%;
+    text-align: center;
 }
 
 #initialScreen {
@@ -209,6 +242,7 @@ input{
 
 #output #nameText {
     color: #575ed8;
+    margin: 0 .3em;
 }
 
 button{
