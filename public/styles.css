@@ -39,6 +39,33 @@ body{
     justify-content: center;
 }
 
+#enterNameScreen-Join {
+    display: none;
+    height: 50vh;
+    align-items: center;
+    flex-direction: column;
+    justify-content: center;
+}
+
+#enterNameJoinForm{
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    justify-content: center;
+    margin-top: 1em;
+}
+
+#submitNameButton-Join {
+    display: flex;
+    width: auto;
+    margin: 1em 1em;
+    font-size: 2em;
+}
+
+#userNameJoin{
+    margin: .2em;
+}
+
 #submitNameButton {
     display: flex;
     width: auto;
@@ -136,6 +163,11 @@ body{
     margin: 0.5em 0.5em;
 }
 
+#initialJoinForm input {
+    display: flex;
+    width: 50%;
+}
+
 #initialScreen button {
     margin: 1em 1em;
     width: auto;
@@ -201,7 +233,6 @@ input{
     border-radius: .25em;
     background: lightgrey;
     font-family: Nunito;
-    margin-left: .75em;
     font-size: 3em;
 }
 
