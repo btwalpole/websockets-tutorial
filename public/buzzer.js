@@ -84,6 +84,14 @@ socket.on("displayEnterNameScreen-Join", (roomName) => {
   enterNameScreenJoin.style.display = "flex";
 });
 
+socket.on("noSuchRoom", (roomName) => {
+  console.log('entered room ' + roomName + ' does not exist');
+  let errorMsg = document.createElement("p");
+  errorMsg.setAttribute("id", "errorMsg");
+  errorMsg.innerHTML = 'No such room exists!';
+  gameCode.after(errorMsg);
+})
+
 //Below is for once you've joined a game
 
 socket.on("showGameCode", function (roomName) {

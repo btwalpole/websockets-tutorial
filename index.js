@@ -57,6 +57,16 @@ io.on("connection", function (socket) {
 
   socket.on("searchGame", function (roomName) {
     console.log("trying to join room ", roomName);
+
+    if (state[roomName]) {
+      console.log('room ' + roomName + ' does exist');
+      socket.emit("displayEnterNameScreen-Join", roomName);
+    } else {
+      console.log('room ' + roomName + ' does NOT exist');
+      socket.emit("noSuchRoom", roomName);
+    }
+    //check if state[roomName] exists already?
+    
     //CHECK THE ROOM EXISTS AND IS VALID, IF NOT THROW ERROR AND RETURN TO INITIAL SCREEN
     /*
     const room = io.sockets.adapter.rooms[data.roomName];
@@ -84,7 +94,6 @@ io.on("connection", function (socket) {
     console.log("someone is in the room already");
     */
     //IF ROOM IS VALID, GO TO ENTER NAME SCREEN
-    socket.emit("displayEnterNameScreen-Join", roomName);
   });
 
   socket.on("joinGame", function ({ userName, roomName }) {

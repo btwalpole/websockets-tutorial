@@ -55,6 +55,12 @@ body{
     margin-top: 1em;
 }
 
+#errorMsg {
+    font-size: 2em;
+    margin: 1em 1em;
+    color: red;
+}
+
 #submitNameButton-Join {
     display: flex;
     width: auto;
