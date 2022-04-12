@@ -65,50 +65,32 @@ io.on("connection", function (socket) {
       console.log('room ' + roomName + ' does NOT exist');
       socket.emit("noSuchRoom", roomName);
     }
-    //check if state[roomName] exists already?
-    
-    //CHECK THE ROOM EXISTS AND IS VALID, IF NOT THROW ERROR AND RETURN TO INITIAL SCREEN
-    /*
-    const room = io.sockets.adapter.rooms[data.roomName];
-    console.log("room: ", room);
-
-    let allUsers;
-    //check there is actually a room with this game code
-    if (room) {
-      //gives a object where key is socket id and value is socket object
-      allUsers = room.sockets;
-      console.log("there is indeed a room called ", data.roomName);
-    }
-
-    let numClients = 0;
-    //check there is someone in the room already
-    if (allUsers) {
-      numClients = Object.keys(allUsers).length;
-    }
-
-    if (numClients === 0) {
-      socket.emit("unknownCode");
-      return;
-    }
-
-    console.log("someone is in the room already");
-    */
-    //IF ROOM IS VALID, GO TO ENTER NAME SCREEN
   });
 
   socket.on("joinGame", function ({ userName, roomName }) {
-    clientRooms[socket.id] = roomName;
-    state[roomName].users.push(userName);
-    console.log("now joining ", roomName);
-    socket.join(roomName);
-    console.log("user: " + userName + " is joining room " + roomName);
-    console.log("admin of this room is: ", state[roomName].admin);
-    socket.emit("initQuiz", { name: userName, admin: state[roomName].admin });
-    socket.emit("showGameCode", roomName);
-    //add to list of players in the room?
+    //first need to check if a player already exists with this name in this room
+    //check if state[roomName].users contains userName
+    if (state[roomName].users.includes(userName)) {
+      console.log('this name is taken')
+    //if username taken then send message back to user saying this
+      socket.emit("userNameTaken", userName)
+    } else {
+      console.log('name is not taken')
+      //if name not taken, join the room:
+      clientRooms[socket.id] = roomName;
+      state[roomName].users.push(userName);
 
-    //get list of
-    io.to(roomName).emit("updatePlayerList", state[roomName].users);
+      console.log("now joining ", roomName);
+      socket.join(roomName);
+
+      console.log("user: " + userName + " is joining room " + roomName);
+      console.log("admin of this room is: ", state[roomName].admin);
+
+      socket.emit("initQuiz", { name: userName, admin: state[roomName].admin });
+      socket.emit("showGameCode", roomName);
+
+      io.to(roomName).emit("updatePlayerList", state[roomName].users);
+    }
   });
 });
 

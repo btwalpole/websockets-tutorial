@@ -55,7 +55,7 @@ body{
     margin-top: 1em;
 }
 
-#errorMsg {
+#errorMsg, #nameTakenErrMsg {
     font-size: 2em;
     margin: 1em 1em;
     color: red;

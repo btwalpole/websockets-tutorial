@@ -92,6 +92,14 @@ socket.on("noSuchRoom", (roomName) => {
   gameCode.after(errorMsg);
 })
 
+socket.on("userNameTaken", takenName => {
+  console.log('user name ' + takenName + ' is already taken!')
+  let nameTakenErrMsg = document.createElement("p");
+  nameTakenErrMsg.setAttribute("id", "nameTakenErrMsg");
+  nameTakenErrMsg.innerHTML = 'User name already taken!';
+  userNameJoin.after(nameTakenErrMsg);
+})
+
 //Below is for once you've joined a game
 
 socket.on("showGameCode", function (roomName) {
