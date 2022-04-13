@@ -3,6 +3,9 @@
         <meta charset="utf-8">
         <title>Epic Buzzer</title>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.4.1/socket.io.min.js"></script>
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Roboto:wght@100&display=swap" rel="stylesheet">
         <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
         <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
         <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
@@ -14,6 +17,9 @@
 
             <div id="initialScreen">
                 <h1>Benji's Cool Quiz Buzzer &#128526;</h1>
+                <a id='logoAttribution' href='https://www.freepik.com/vectors/isometric-illustration'>
+                    <img id='logo' src='quizLogo.jpg' />
+                </a>
                 <div id="initialForms">
                     <form onsubmit="event.preventDefault();">
                         <button
