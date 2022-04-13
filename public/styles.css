@@ -301,7 +301,7 @@ input{
     margin: 0 .3em;
 }
 
-button{
+#submitNameButton-Join, #submitNameButton, #joinGameButton, #newGameButton{
     /*background: #575ed8;*/
     background: #8844bb;
     color: #fff;
@@ -312,59 +312,51 @@ button{
     border-radius: .5em;
 }
 
-#buzz {
-    border-radius: 500px;
-    width: 400px;
+.buzzBack {
+    border-radius: 800px;
     height: 400px;
-    margin: 2em;
-    font-size: 3em;
-    cursor: pointer;
-}
-
-.pushable {
+    width: 400px;
     background: hsl(340deg 100% 32%);
-    border-radius: 12px;
     border: none;
     padding: 0;
     cursor: pointer;
     outline-offset: 4px;
+    margin: 3em;
   }
 
-.front {
-    border-radius: 500px;
-    width: 400px;
+.buzzFront {
     height: 400px;
-    display: block;
-    padding: 12px 42px;
-    font-size: 1.25rem;
+    width: 400px;
+    border-radius: 800px;
+    display: flex; 
+    justify-content: center;
+    align-items: center;
+    font-size: 3em;
+    text-align: center;
     background: hsl(345deg 100% 47%);
     color: white;
     transform: translateY(-16px);
 }
 
-.pushable:active .front {
+.buzzBack:active .buzzFront {
     transform: translateY(-2px);
   }
-/*
-.disabled-buzz {
+
+.disabled-buzzFront {
     background: grey;
 }
 
-.enabled-buzz {
-    background-image: linear-gradient(
-        330deg,
-        hsl(0deg 100% 32%) 0%,
-        hsl(360deg 100% 37%) 27%,
-        hsl(360deg 100% 42%) 61%,
-        hsl(360deg 100% 47%) 78%,
-        hsl(5deg 100% 56%) 88%,
-        hsl(7deg 100% 64%) 94%,
-        hsl(5deg 100% 72%) 97%,
-        hsl(0deg 89% 78%) 100%
-    );
+.disabled-buzzBack {
+    background: rgb(85, 85, 85);
 }
-*/
 
+.enabled-buzzFront {
+    background: hsl(345deg 100% 47%);
+}
+
+.enabled-buzzBack {
+    background: hsl(340deg 100% 32%);
+}
 
 video {
     object-fit: cover;

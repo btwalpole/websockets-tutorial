@@ -5,7 +5,8 @@ const socket = io();
 //Query DOM
 var resetBtn = document.getElementById("reset"),
   userName = document.getElementById("userName"),
-  buzzBtn = document.getElementById("buzz"),
+  buzzBack = document.getElementsByClassName("buzzBack"),
+  buzzFront = document.getElementsByClassName("buzzFront")
   chat = document.getElementById("chat-window"),
   output = document.getElementById("output"),
   initScreen = document.getElementById("initialScreen"),
@@ -25,7 +26,6 @@ var resetBtn = document.getElementById("reset"),
   playersDisplay = document.getElementById("players");
 
 //// Setting up the game
-
 newGameBtn.addEventListener("click", function () {
   socket.emit("promptUsername");
 });
@@ -132,7 +132,7 @@ socket.on("updatePlayerList", function (players) {
 //// Using the buzzer
 
 // Emit events
-buzzBtn.addEventListener("click", function () {
+buzzBack[0].addEventListener("click", function () {
   const random = Math.floor(Math.random() * emojis.length);
 
   socket.emit("buzz", {
@@ -173,17 +173,21 @@ socket.on("buzzed", function (data) {
     "</p><p>   buzzed first!!</p><p id='emoji'> " +
     emojis[data.emojiNum] +
     " </p>";
-  buzzBtn.disabled = true;
-  buzzBtn.classList.add("disabled-buzz");
-  buzzBtn.classList.remove("enabled-buzz");
+  buzzBack[0].disabled = true;
+  buzzBack[0].classList.add("disabled-buzzBack");
+  buzzBack[0].classList.remove("enabled-buzzBack");
+  buzzFront[0].classList.add("disabled-buzzFront");
+  buzzFront[0].classList.remove("enabled-buzzFront");
   //chat.scrollTop = chat.scrollHeight;
 });
 
 socket.on("reset", function () {
   //these changes are only visible to the admin user, button is invisble to all others
-  buzzBtn.disabled = false;
-  buzzBtn.classList.remove("disabled-buzz");
-  buzzBtn.classList.add("enabled-buzz");
+  buzzBack[0].disabled = false;
+  buzzBack[0].classList.add("enabled-buzzBack");
+  buzzBack[0].classList.remove("disabled-buzzBack");
+  buzzFront[0].classList.add("enabled-buzzFront");
+  buzzFront[0].classList.remove("disabled-buzzFront");
   resetBtn.disabled = true;
   resetBtn.classList.remove("enabled-reset");
   resetBtn.classList.add("disabled-reset");
