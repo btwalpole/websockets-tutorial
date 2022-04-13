@@ -312,6 +312,40 @@ button{
     border-radius: .5em;
 }
 
+#buzz {
+    border-radius: 500px;
+    width: 400px;
+    height: 400px;
+    margin: 2em;
+    font-size: 3em;
+    cursor: pointer;
+}
+
+.pushable {
+    background: hsl(340deg 100% 32%);
+    border-radius: 12px;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    outline-offset: 4px;
+  }
+
+.front {
+    border-radius: 500px;
+    width: 400px;
+    height: 400px;
+    display: block;
+    padding: 12px 42px;
+    font-size: 1.25rem;
+    background: hsl(345deg 100% 47%);
+    color: white;
+    transform: translateY(-16px);
+}
+
+.pushable:active .front {
+    transform: translateY(-2px);
+  }
+/*
 .disabled-buzz {
     background: grey;
 }
@@ -329,16 +363,8 @@ button{
         hsl(0deg 89% 78%) 100%
     );
 }
+*/
 
-#buzz {
-    border-radius: 500px;
-    width: 400px;
-    height: 400px;
-    margin: 2em;
-    font-size: 3em;
-    cursor: pointer;
-    
-}
 
 video {
     object-fit: cover;
