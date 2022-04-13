@@ -83,7 +83,9 @@ body{
     display: flex;
     width: auto;
     margin: 1em 1em;
-    font-size: 2em;
+    font-size: 3em;
+    justify-content: center;
+
 }
 
 #userNameJoin{
@@ -93,8 +95,9 @@ body{
 #submitNameButton {
     display: flex;
     width: auto;
-    font-size: 2em;
+    font-size: 3em;
     margin: 1em;
+    justify-content: center;
 }
 
 #enterNameCreateForm {
@@ -310,6 +313,10 @@ input{
     padding: 1em 1em;
     width: 100%;
     border-radius: .5em;
+}
+
+#submitNameButton-Join, #submitNameButton {
+    font-size: 2em;
 }
 
 .buzzBack {
