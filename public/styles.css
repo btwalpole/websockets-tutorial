@@ -30,6 +30,7 @@ body{
     margin: 0;
     width: 100%;
     height: 100vh;
+    border: 3px solid green;
 }
 
 #initialScreen {
@@ -38,18 +39,23 @@ body{
     flex-direction: column;
     justify-content: space-around;
     font-family: inherit;
-    height: auto;
+    max-height: 90vh;
     width: 95vw;
+    border: 3px solid red;
+
 }
 
 #initialScreen h1 {
     font-size: 3em;
+    display: flex;
+    border: 3px solid blue;
 }
 
 #logoAttribution {
     display: flex;
     align-items: center;
     justify-content: center;
+    border: 3px solid blue;
 }
 
 #logo {
@@ -60,16 +66,21 @@ body{
 
 #initialScreen #initialForms {
     display: flex;
-    height: 30em;
     align-items: center;
     flex-direction: column;
     justify-content: space-between;
     width: 100%;
+    border: 3px solid pink;
 }
 
+#initialScreen #createGameForm {
+    display: flex;
+}
 
 #initialScreen button {
     font-size: 2em;
+    display: flex;
+    border: 3px solid blue;
 }
 
 #initialJoinForm {
