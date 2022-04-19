@@ -13,6 +13,16 @@ app.use(express.static("public"));
 //Socket setup
 const io = socket(server);
 
+io.use((socket, next) => {
+  const username = socket.handshake.auth.username;
+  console.log('username: ', username)
+  if (!username) {
+    return next(new Error("invalid username"));
+  }
+  socket.username = username;
+  next();
+});
+
 const state = {};
 const clientRooms = {}; //allows us to look up room name of a given userId
 

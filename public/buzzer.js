@@ -1,6 +1,7 @@
 //Make connection
-//const socket = io.connect('http://localhost:4000');
-const socket = io();
+const socket = io({
+  autoConnect: false
+});
 
 //Query DOM
 var resetBtn = document.getElementById("reset"),
@@ -34,15 +35,24 @@ submitNameBtn.addEventListener("click", function () {
   console.log("name: ", userName.value);
   console.log("room: ", roomNameCreate.innerText);
 
+  socket.auth.username = 'Barry'
+
+  socket.connect();
+
   socket.emit("newGame", {
     userName: userName.value,
     roomName: roomNameCreate.innerText,
   });
+
 });
 
 submitNameJoinBtn.addEventListener("click", function () {
   console.log("joining with name: ", userNameJoin.value);
   console.log("joining room: ", roomNameJoin.innerText);
+
+  socket.auth.username = 'Larry'
+
+  socket.connect();
 
   socket.emit("joinGame", {
     userName: userNameJoin.value,
