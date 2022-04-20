@@ -46,20 +46,6 @@ io.on("connection", function (socket) {
     userID: socket.userID,
   });
 
-  socket.on("buzz", function (data) {
-    console.log("this person buzzed: ", data.name);
-    console.log("they buzzed in this room ", data.roomName);
-    console.log("admin of this room is: ", state[data.roomName].admin);
-    io.to(data.roomName).emit("buzzed", {
-      ...data,
-      admin: state[data.roomName].admin,
-    });
-  });
-
-  socket.on("reset", function (roomName) {
-    io.in(roomName).emit("reset");
-  });
-
   socket.on("newGame", function () {
     console.log("starting new game");
     const roomName = makeId(5);
@@ -81,14 +67,14 @@ io.on("connection", function (socket) {
     io.in(roomName).emit("updatePlayerList", state[roomName].users);
   });
 
-  socket.on("joinGame", function ({ userName, roomName }) {
+  socket.on("joinGame", function (roomName) {
     if (state[roomName]) {
       console.log("room " + roomName + " does exist");
       //first need to check if a player already exists with this name in this room
-      if (state[roomName].users.includes(userName)) {
+      if (state[roomName].users.includes(socket.username)) {
         console.log("this name is taken");
         //if username taken then send message back to user saying this
-        socket.emit("userNameTaken", userName);
+        socket.emit("userNameTaken", socket.username);
       } else {
         console.log("name is not taken");
         //if name not taken, join the room:
@@ -97,16 +83,18 @@ io.on("connection", function (socket) {
           userID: socket.userID,
           username: socket.username,
         };
-        state[roomName].users.push(userName);
+        state[roomName].users.push(socket.username);
 
         console.log("now joining ", roomName);
         socket.join(roomName);
 
-        console.log("user: " + userName + " is joining room " + roomName);
+        console.log(
+          "user: " + socket.username + " is joining room " + roomName
+        );
         console.log("admin of this room is: ", state[roomName].admin);
 
         socket.emit("initQuiz", {
-          name: userName,
+          name: socket.username,
           admin: state[roomName].admin,
         });
         socket.emit("showGameCode", roomName);
@@ -117,6 +105,20 @@ io.on("connection", function (socket) {
       console.log("room " + roomName + " does NOT exist");
       socket.emit("noSuchRoom", roomName);
     }
+  });
+
+  socket.on("buzz", function (data) {
+    console.log("this person buzzed: ", data.name);
+    console.log("they buzzed in this room ", data.roomName);
+    console.log("admin of this room is: ", state[data.roomName].admin);
+    io.to(data.roomName).emit("buzzed", {
+      ...data,
+      admin: state[data.roomName].admin,
+    });
+  });
+
+  socket.on("reset", function (roomName) {
+    io.in(roomName).emit("reset");
   });
 });
 

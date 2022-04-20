@@ -55,6 +55,11 @@ newGameBtn.addEventListener("click", function () {
 
 joinGameBtn.addEventListener("click", function () {
   if (gameCode.value != "") {
+    socket.auth.username = userName.value;
+    console.log("socket", socket);
+    console.log("now connecting to socket.io");
+    socket.connect();
+    console.log("joining room: ", gameCode.value);
     socket.emit("joinGame", gameCode.value);
   } else {
     console.log("game code field is empty");
@@ -142,10 +147,10 @@ resetBtn.addEventListener("click", function () {
 
 //Listen for events
 socket.on("buzzed", function (data) {
-  console.log("current socket id: ", socket.id);
+  console.log("current socket id: ", socket.userID);
   console.log("admin socket id: ", data.admin);
 
-  if (socket.id === data.admin) {
+  if (socket.userID === data.admin) {
     console.log("you are the admin!");
     resetBtn.disabled = false;
     resetBtn.classList.add("enabled-reset");
