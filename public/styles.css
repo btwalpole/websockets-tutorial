@@ -32,8 +32,8 @@ body{
     height: 100vh;
 }
 
-#initialScreen {
-    display: flex;
+#homeScreen {
+    display: none;
     align-items: center;
     flex-direction: column;
     justify-content: space-around;
@@ -42,7 +42,7 @@ body{
     width: 95vw;
 }
 
-#initialScreen h1 {
+#homeScreen h1 {
     font-size: 3em;
 }
 
@@ -58,7 +58,7 @@ body{
     max-width: 800px;
 }
 
-#initialScreen #initialForms {
+#homeScreen #initialForms {
     display: flex;
     height: 30em;
     align-items: center;
@@ -68,7 +68,7 @@ body{
 }
 
 
-#initialScreen button {
+#homeScreen button {
     font-size: 2em;
 }
 
@@ -89,7 +89,7 @@ body{
     width: 50%;
 }
 
-#initialScreen button {
+#homeScreen button {
     margin: 1em 1em;
     width: auto;
 }
@@ -175,27 +175,11 @@ input{
 }
 
 #enterNameScreen {
-    display: none;
-    height: 50vh;
-    align-items: center;
-    flex-direction: column;
-    justify-content: center;
-}
-
-#enterNameScreen-Join {
-    display: none;
-    height: 50vh;
-    align-items: center;
-    flex-direction: column;
-    justify-content: center;
-}
-
-#enterNameJoinForm{
     display: flex;
+    height: 50vh;
     align-items: center;
     flex-direction: column;
     justify-content: center;
-    margin-top: 1em;
 }
 
 #errorMsg, #nameTakenErrMsg {
@@ -204,20 +188,7 @@ input{
     color: red;
 }
 
-#submitNameButton-Join {
-    display: flex;
-    width: auto;
-    margin: 1em 1em;
-    font-size: 3em;
-    justify-content: center;
-
-}
-
-#userNameJoin{
-    margin: .2em;
-}
-
-#submitNameButton {
+#submitNameBtn {
     display: flex;
     width: auto;
     font-size: 3em;
@@ -225,17 +196,13 @@ input{
     justify-content: center;
 }
 
-#enterNameCreateForm {
+#enterNameForm {
     display: flex;
     align-items: center;
     flex-direction: column;
     justify-content: center;
     padding: 1em 1em;
     margin: 1em 1em;
-}
-
-#enterNameScreen-Join {
-    display: none;
 }
 
 #gameScreen {
@@ -316,8 +283,7 @@ input{
     margin: 0 .3em;
 }
 
-#submitNameButton-Join, #submitNameButton, #joinGameButton, #newGameButton{
-    /*background: #575ed8;*/
+#submitNameButton, #joinGameButton, #newGameButton{
     background: #8844bb;
     color: #fff;
     font-size: 1em;
@@ -327,7 +293,7 @@ input{
     border-radius: .5em;
 }
 
-#submitNameButton-Join, #submitNameButton {
+#submitNameButton {
     font-size: 2em;
 }
 

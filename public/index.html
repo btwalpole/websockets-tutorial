@@ -2,7 +2,7 @@
     <head>
         <meta charset="utf-8">
         <title>Epic Buzzer</title>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.4.1/socket.io.min.js"></script>
+        <script src="/socket.io/socket.io.js"></script>
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
         <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Roboto:wght@100&display=swap" rel="stylesheet">
@@ -15,12 +15,26 @@
     <body>
         <div id='container'>
 
-            <div id="initialScreen">
+            <div id='enterNameScreen'>
+                <form id="enterNameForm" onsubmit="event.preventDefault();">
+                    <label for="userName">Enter your name:</label>
+                    <input id="userName" type="text" name="userName" required/>  
+                    <button
+                        type="submit"
+                        id="submitNameBtn"
+                    >
+                    Submit
+                    </button>
+                </form>
+            </div>
+
+            <div id="homeScreen">
                 <h1 id='title'>Benji's Cool Quiz Buzzer &#128526;</h1>
                 <a id='logoAttribution' href='https://www.freepik.com/vectors/isometric-illustration'>
                     <img id='logo' src='quizLogo.jpg' />
                 </a>
                 <div id="initialForms">
+                    <h2 id="welcome">Hi <span id="homeUserName"></span></h2>
                     <form onsubmit="event.preventDefault();">
                         <button
                             type="submit"
@@ -35,43 +49,13 @@
                         <input id="gameCode" type="text" name="gameCode" required/> 
                         <button
                             type="submit"
-                            id="joinGameButton"
+                            id="joinGameBtn"
                         >
                         Join Game
                         </button>
                     </form>
                 </div>
                 
-            </div>
-
-            <div id='enterNameScreen'>
-                <h1>Creating Game: <span id="roomNameCreate"></span></h1>
-                <form id="enterNameCreateForm" onsubmit="event.preventDefault();">
-                    <label for="userName">Enter your name:</label>
-                    <input id="userName" type="text" name="userName" required/>  
-                    <button
-                        type="submit"
-                        id="submitNameButton"
-                    >
-                    Create New Game
-                    </button>
-                </form>
-            </div>
-
-            <div id='enterNameScreen-Join'>
-                <div>
-                    <h1>Joining Game: <span id="roomNameJoin"></span></h1>
-                </div>
-                <form id="enterNameJoinForm" onsubmit="event.preventDefault();">
-                    <label for="userNameJoin">Enter your name:</label>
-                    <input id="userNameJoin" type="text" name="userNameJoin" required/>  
-                    <button
-                        type="submit"
-                        id="submitNameButton-Join"
-                    >
-                    Join Game
-                    </button>
-                </form>
             </div>
 
             <div id='gameScreen'>

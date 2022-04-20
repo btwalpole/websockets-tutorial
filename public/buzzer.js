@@ -1,132 +1,107 @@
 //Make connection
 const socket = io({
-  autoConnect: false
+  autoConnect: false,
+  auth: {
+    token: "abcd",
+  },
 });
 
+//on page load, check localstorage for session id
+//if none, then we set the session id
+/*
+const sessionID = localStorage.getItem("sessionID");
+if (!sessionID) {
+  socket.auth.sessionID = "686886868";
+}
+*/
 //Query DOM
 var resetBtn = document.getElementById("reset"),
   userName = document.getElementById("userName"),
   buzzBack = document.getElementsByClassName("buzzBack"),
-  buzzFront = document.getElementsByClassName("buzzFront")
+  buzzFront = document.getElementsByClassName("buzzFront"),
   chat = document.getElementById("chat-window"),
   output = document.getElementById("output"),
-  initScreen = document.getElementById("initialScreen"),
+  homeScreen = document.getElementById("homeScreen"),
+  homeUserName = document.getElementById("homeUserName"),
   gameScreen = document.getElementById("gameScreen"),
   enterNameScreen = document.getElementById("enterNameScreen"),
-  enterNameScreenJoin = document.getElementById("enterNameScreen-Join"),
   roomNameCreate = document.getElementById("roomNameCreate"),
-  roomNameJoin = document.getElementById("roomNameJoin"),
-  userNameJoin = document.getElementById("userNameJoin"),
   newGameBtn = document.getElementById("newGameButton"),
-  submitNameBtn = document.getElementById("submitNameButton"),
-  submitNameJoinBtn = document.getElementById("submitNameButton-Join"),
-  joinGameBtn = document.getElementById("joinGameButton"),
+  joinGameBtn = document.getElementById("joinGameBtn"),
+  submitNameBtn = document.getElementById("submitNameBtn"),
   gameCodeDisplay = document.getElementById("gameCodeDisplay"),
   gameCode = document.getElementById("gameCode"),
   nameDisplay = document.getElementById("name"),
   playersDisplay = document.getElementById("players");
 
 //// Setting up the game
-newGameBtn.addEventListener("click", function () {
-  socket.emit("promptUsername");
-});
-
 submitNameBtn.addEventListener("click", function () {
+  homeScreen.style.display = "flex";
+  enterNameScreen.style.display = "none";
+
   console.log("name: ", userName.value);
-  console.log("room: ", roomNameCreate.innerText);
-
-  socket.auth.username = 'Barry'
-
-  socket.connect();
-
-  socket.emit("newGame", {
-    userName: userName.value,
-    roomName: roomNameCreate.innerText,
-  });
-
+  homeUserName.innerText = userName.value;
 });
 
-submitNameJoinBtn.addEventListener("click", function () {
-  console.log("joining with name: ", userNameJoin.value);
-  console.log("joining room: ", roomNameJoin.innerText);
-
-  socket.auth.username = 'Larry'
-
+newGameBtn.addEventListener("click", function () {
+  console.log("now creating game as ", userName.value);
+  socket.auth.username = userName.value;
+  console.log("socket", socket);
+  console.log("now connecting to socket.io");
   socket.connect();
-
-  socket.emit("joinGame", {
-    userName: userNameJoin.value,
-    roomName: roomNameJoin.innerText,
-  });
+  console.log("now emitting newGame event");
+  socket.emit("newGame");
 });
 
 joinGameBtn.addEventListener("click", function () {
   if (gameCode.value != "") {
-    socket.emit("searchGame", gameCode.value);
+    socket.emit("joinGame", gameCode.value);
   } else {
     console.log("game code field is empty");
   }
 });
 
-function clear() {
-  gameCodeInput.value = "";
-  initScreen.style.display = "flex";
-  gameScreen.style.display = "none";
-}
-
-socket.on("displayEnterNameScreen", (roomName) => {
-  roomNameCreate.innerText = roomName;
-  console.log(
-    "about to enter user name for creating room: ",
-    roomNameCreate.innerText
-  );
-  initScreen.style.display = "none";
-  enterNameScreen.style.display = "flex";
+socket.on("session", ({ sessionID, userID }) => {
+  // attach the session ID to the next reconnection attempts
+  socket.auth = { sessionID };
+  // store it in the localStorage
+  localStorage.setItem("sessionID", sessionID);
+  // save the ID of the user
+  socket.userID = userID;
+  console.log("got session event, now socket is: ", socket);
 });
 
-socket.on("displayEnterNameScreen-Join", (roomName) => {
-  roomNameJoin.innerText = roomName;
-  console.log(
-    "about to enter user name for joining room: ",
-    roomNameJoin.innerText
-  );
-  initScreen.style.display = "none";
-  enterNameScreenJoin.style.display = "flex";
+socket.on("initQuiz", function (data) {
+  //hide the home screen a show the game screen
+  homeScreen.style.display = "none";
+  gameScreen.style.display = "flex";
+  nameDisplay.innerText = userName.value;
+  if (socket.userID === data.admin) {
+    resetBtn.style.display = "flex";
+  }
 });
 
 socket.on("noSuchRoom", (roomName) => {
-  console.log('entered room ' + roomName + ' does not exist');
+  console.log("entered room " + roomName + " does not exist");
   let errorMsg = document.createElement("p");
   errorMsg.setAttribute("id", "errorMsg");
-  errorMsg.innerHTML = 'No such room exists!';
+  errorMsg.innerHTML = "No such room exists!";
   gameCode.after(errorMsg);
-})
+});
 
-socket.on("userNameTaken", takenName => {
-  console.log('user name ' + takenName + ' is already taken!')
+socket.on("userNameTaken", (takenName) => {
+  console.log("user name " + takenName + " is already taken!");
   let nameTakenErrMsg = document.createElement("p");
   nameTakenErrMsg.setAttribute("id", "nameTakenErrMsg");
-  nameTakenErrMsg.innerHTML = 'User name already taken!';
+  nameTakenErrMsg.innerHTML = "User name already taken!";
   userNameJoin.after(nameTakenErrMsg);
-})
+});
 
 //Below is for once you've joined a game
 
 socket.on("showGameCode", function (roomName) {
   console.log("showing the game code: ", roomName);
   gameCodeDisplay.innerText = roomName;
-});
-
-socket.on("initQuiz", function (data) {
-  //hide the intro screen a show the game screen
-  initScreen.style.display = "none";
-  enterNameScreen.style.display = "none";
-  enterNameScreenJoin.style.display = "none";
-  gameScreen.style.display = "flex";
-  nameDisplay.innerText = data.name;
-  if (socket.id === data.admin) {
-    resetBtn.style.display = "flex";
-  }
 });
 
 socket.on("updatePlayerList", function (players) {
