@@ -15,36 +15,54 @@ const io = socket(server);
 
 const state = {};
 const sessions = {}; //allows us to look up room name of a given sessionID
-/*
-io.use((socket, next) => {
-  const username = socket.handshake.auth.username;
-  console.log("username", username);
-  if (!username) {
-    console.log("invalid username");
-  }
-  socket.sessionID = makeId(10);
-  socket.userID = randomId(15);
-  socket.username = username;
-  next();
-});
-*/
 
 io.on("connection", function (socket) {
   console.log("made socket connection", socket.id);
 
-  const username = socket.handshake.auth.username;
-  console.log("username", username);
-  if (!username) {
-    console.log("invalid username");
-  }
-  socket.sessionID = makeId(10);
-  socket.userID = makeId(15);
-  socket.username = username;
+  const sessionID = socket.handshake.auth.sessionID;
+  console.log("sessionID: ", sessionID);
 
-  socket.emit("session", {
-    sessionID: socket.sessionID,
-    userID: socket.userID,
-  });
+  if (sessionID) {
+    // find existing session
+    if (sessions[sessionID]) {
+      socket.sessionID = sessionID;
+      socket.userID = sessions[sessionID].userID;
+      socket.username = sessions[sessionID].username;
+      console.log("found session details: ", sessions[sessionID]);
+      console.log("socket now has: ", socket);
+
+      socket.emit("oldSession", {
+        userID: socket.userID,
+        roomName: sessions[sessionID].room,
+        oldUserName: socket.username,
+      });
+    } else {
+      console.log(
+        "found sessionID in localStorage " +
+          sessionID +
+          " but no session in server!"
+      );
+      console.log(
+        "telling client to remove session from storage and reconnect"
+      );
+      socket.emit("clearLocalStorage");
+    }
+  } else {
+    const username = socket.handshake.auth.username;
+    console.log("username", username);
+    if (!username) {
+      console.log("invalid username");
+    }
+    socket.sessionID = makeId(10);
+    console.log("freshly created sessionID: ", socket.sessionID);
+    socket.userID = makeId(15);
+    socket.username = username;
+
+    socket.emit("newSession", {
+      sessionID: socket.sessionID,
+      userID: socket.userID,
+    });
+  }
 
   socket.on("newGame", function () {
     console.log("starting new game");
@@ -67,13 +85,11 @@ io.on("connection", function (socket) {
     io.in(roomName).emit("updatePlayerList", state[roomName].users);
   });
 
-  socket.on("joinGame", function (roomName) {
+  socket.on("joinGame", function ({ roomName, reJoin }) {
     if (state[roomName]) {
       console.log("room " + roomName + " does exist");
       //first need to check if a player already exists with this name in this room
-      if (state[roomName].users.includes(socket.username)) {
-        console.log("this name is taken");
-        //if username taken then send message back to user saying this
+      if (reJoin === false && state[roomName].users.includes(socket.username)) {
         socket.emit("userNameTaken", socket.username);
       } else {
         console.log("name is not taken");

@@ -8,12 +8,14 @@ const socket = io({
 
 //on page load, check localstorage for session id
 //if none, then we set the session id
-/*
+
 const sessionID = localStorage.getItem("sessionID");
-if (!sessionID) {
-  socket.auth.sessionID = "686886868";
+if (sessionID) {
+  console.log("found a session id: ", sessionID);
+  socket.auth.sessionID = sessionID;
+  socket.connect();
 }
-*/
+
 //Query DOM
 var resetBtn = document.getElementById("reset"),
   userName = document.getElementById("userName"),
@@ -60,13 +62,23 @@ joinGameBtn.addEventListener("click", function () {
     console.log("now connecting to socket.io");
     socket.connect();
     console.log("joining room: ", gameCode.value);
-    socket.emit("joinGame", gameCode.value);
+    socket.emit("joinGame", { roomName: gameCode.value, reJoin: false });
   } else {
     console.log("game code field is empty");
   }
 });
 
-socket.on("session", ({ sessionID, userID }) => {
+socket.on("clearLocalStorage", () => {
+  console.log("clearing localStorage");
+  localStorage.removeItem("sessionID");
+  console.log(
+    "checking localStroage for sessionID: ",
+    localStorage.getItem("sessionID")
+  );
+  socket.disconnect();
+});
+
+socket.on("newSession", ({ sessionID, userID }) => {
   // attach the session ID to the next reconnection attempts
   socket.auth = { sessionID };
   // store it in the localStorage
@@ -74,6 +86,17 @@ socket.on("session", ({ sessionID, userID }) => {
   // save the ID of the user
   socket.userID = userID;
   console.log("got session event, now socket is: ", socket);
+});
+
+socket.on("oldSession", ({ userID, roomName, oldUserName }) => {
+  // save the ID of the user
+  socket.userID = userID;
+  socket.roomName = roomName;
+  userName.value = oldUserName;
+  console.log("got old session event");
+  console.log("room name: ", socket.roomName);
+  console.log("room name 2: ", roomName);
+  socket.emit("joinGame", { roomName: socket.roomName, reJoin: true });
 });
 
 socket.on("initQuiz", function (data) {
