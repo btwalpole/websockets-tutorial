@@ -23,13 +23,13 @@ io.on("connection", function (socket) {
   console.log("sessionID: ", sessionID);
 
   if (sessionID) {
-    // find existing session
+    // check if there is an associated room and userid and username for thissession
     if (sessions[sessionID]) {
+      // setting values on the socket instance
       socket.sessionID = sessionID;
       socket.userID = sessions[sessionID].userID;
       socket.username = sessions[sessionID].username;
       console.log("found session details: ", sessions[sessionID]);
-      console.log("socket now has: ", socket);
 
       socket.emit("oldSession", {
         userID: socket.userID,
@@ -135,6 +135,20 @@ io.on("connection", function (socket) {
 
   socket.on("reset", function (roomName) {
     io.in(roomName).emit("reset");
+  });
+
+  socket.on("disconnect", () => {
+    console.log(socket.id); // undefined
+    //check if user is in a room
+    const room = sessions[socket.sessionID].room;
+    console.log('room to disconnect from: ', room)
+    if (room) {
+      //remove user from room state
+        //remove username from state[roomName].users
+        console.log('removing ' + socket.username + 'from room: ' + room)
+        const i = state[roomName].users.indexOf(socket.username);
+        state[room].users.splice(i, 1);
+    }
   });
 });
 

@@ -1,9 +1,7 @@
 //Make connection
 const socket = io({
   autoConnect: false,
-  auth: {
-    token: "abcd",
-  },
+  auth: {},
 });
 
 //on page load, check localstorage for session id
@@ -13,8 +11,11 @@ const sessionID = localStorage.getItem("sessionID");
 if (sessionID) {
   console.log("found a session id: ", sessionID);
   socket.auth.sessionID = sessionID;
-  socket.connect();
 }
+
+console.log('no previous session id found')
+
+socket.connect();
 
 //Query DOM
 var resetBtn = document.getElementById("reset"),
