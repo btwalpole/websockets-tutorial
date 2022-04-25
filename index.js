@@ -48,6 +48,7 @@ io.on("connection", function (socket) {
       socket.emit("clearLocalStorage");
     }
   } else {
+    //no session ID saved in localStorage - send ID to be set
     const username = socket.handshake.auth.username;
     console.log("username", username);
     if (!username) {
@@ -146,7 +147,7 @@ io.on("connection", function (socket) {
       //remove user from room state
         //remove username from state[roomName].users
         console.log('removing ' + socket.username + 'from room: ' + room)
-        const i = state[roomName].users.indexOf(socket.username);
+        const i = state[room].users.indexOf(socket.username);
         state[room].users.splice(i, 1);
     }
   });

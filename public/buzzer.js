@@ -11,11 +11,9 @@ const sessionID = localStorage.getItem("sessionID");
 if (sessionID) {
   console.log("found a session id: ", sessionID);
   socket.auth.sessionID = sessionID;
+  console.log('no previous session id found')
+  socket.connect();
 }
-
-console.log('no previous session id found')
-
-socket.connect();
 
 //Query DOM
 var resetBtn = document.getElementById("reset"),
@@ -76,7 +74,7 @@ socket.on("clearLocalStorage", () => {
     "checking localStroage for sessionID: ",
     localStorage.getItem("sessionID")
   );
-  socket.disconnect();
+  socket.disconnect().connect();
 });
 
 socket.on("newSession", ({ sessionID, userID }) => {
