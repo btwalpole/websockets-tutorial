@@ -41,12 +41,14 @@ submitNameBtn.addEventListener("click", function () {
   enterNameScreen.style.display = "none";
 
   console.log("name: ", userName.value);
+  socket.auth.username = userName.value;
+
   homeUserName.innerText = userName.value;
 });
 
 newGameBtn.addEventListener("click", function () {
   console.log("now creating game as ", userName.value);
-  socket.auth.username = userName.value;
+  //socket.auth.username = userName.value;
   console.log("socket", socket);
   console.log("now connecting to socket.io");
   socket.connect();
@@ -56,7 +58,7 @@ newGameBtn.addEventListener("click", function () {
 
 joinGameBtn.addEventListener("click", function () {
   if (gameCode.value != "") {
-    socket.auth.username = userName.value;
+    //socket.auth.username = userName.value;
     console.log("socket", socket);
     console.log("now connecting to socket.io");
     socket.connect();
@@ -71,11 +73,11 @@ socket.on("clearLocalStorage", () => {
   console.log("clearing localStorage");
   localStorage.removeItem("sessionID");
   console.log(
-    "checking localStroage for sessionID: ",
+    "checking localStorage for sessionID: ",
     localStorage.getItem("sessionID")
   );
   socket.auth  = {}
-  socket.disconnect().connect();
+  socket.disconnect();
 });
 
 socket.on("newSession", ({ sessionID, userID }) => {
