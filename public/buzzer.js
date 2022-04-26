@@ -5,14 +5,14 @@ const socket = io({
 });
 
 //on page load, check localstorage for session id
-//if none, then we set the session id
-
+//if none, then we connect later on joining/ crating a game
 const sessionID = localStorage.getItem("sessionID");
 if (sessionID) {
   console.log("found a session id: ", sessionID);
   socket.auth.sessionID = sessionID;
-  console.log('no previous session id found')
   socket.connect();
+} else {
+  console.log('no previous session id found')
 }
 
 //Query DOM
@@ -102,6 +102,7 @@ socket.on("initQuiz", function (data) {
   //hide the home screen a show the game screen
   homeScreen.style.display = "none";
   gameScreen.style.display = "flex";
+  enterNameScreen.style.display = "none";
   nameDisplay.innerText = userName.value;
   if (socket.userID === data.admin) {
     resetBtn.style.display = "flex";

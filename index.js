@@ -23,7 +23,7 @@ io.on("connection", function (socket) {
   console.log("sessionID: ", sessionID);
 
   if (sessionID) {
-    // check if there is an associated room and userid and username for thissession
+    // check if there is an associated room and userid and username for this session
     if (sessions[sessionID]) {
       // setting values on the socket instance
       socket.sessionID = sessionID;
@@ -100,6 +100,8 @@ io.on("connection", function (socket) {
           userID: socket.userID,
           username: socket.username,
         };
+
+        //in here we are rejoining (so we have previously disconnected), or the name is not present already, so should be no duplication
         state[roomName].users.push(socket.username);
 
         console.log("now joining ", roomName);
@@ -141,14 +143,18 @@ io.on("connection", function (socket) {
   socket.on("disconnect", () => {
     console.log(socket.id); // undefined
     //check if user is in a room
-    const room = sessions[socket.sessionID].room;
-    console.log('room to disconnect from: ', room)
-    if (room) {
+    console.log('socket.sessionID', socket.sessionID)
+    console.log('sessions[socket.sessionID]', sessions[socket.sessionID])
+    if (sessions[socket.sessionID].room) {
+      const room = sessions[socket.sessionID].room;
       //remove user from room state
-        //remove username from state[roomName].users
-        console.log('removing ' + socket.username + 'from room: ' + room)
-        const i = state[room].users.indexOf(socket.username);
-        state[room].users.splice(i, 1);
+      //remove username from state[roomName].users
+      console.log('removing ' + socket.username + 'from room: ' + room)
+      const i = state[room].users.indexOf(socket.username);
+      state[room].users.splice(i, 1);
+      io.in(roomName).emit("updatePlayerList", state[room].users);
+    } else {
+      console.log('no room found to remove the user from')
     }
   });
 });
