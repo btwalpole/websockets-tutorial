@@ -74,6 +74,7 @@ socket.on("clearLocalStorage", () => {
     "checking localStroage for sessionID: ",
     localStorage.getItem("sessionID")
   );
+  socket.auth  = {}
   socket.disconnect().connect();
 });
 

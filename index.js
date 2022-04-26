@@ -52,7 +52,7 @@ io.on("connection", function (socket) {
     const username = socket.handshake.auth.username;
     console.log("username", username);
     if (!username) {
-      console.log("invalid username");
+      console.log("invalid or no username");
     }
     socket.sessionID = makeId(10);
     console.log("freshly created sessionID: ", socket.sessionID);
@@ -141,22 +141,26 @@ io.on("connection", function (socket) {
   });
 
   socket.on("disconnect", () => {
-    console.log(socket.id); // undefined
+    console.log(socket.id);
     //check if user is in a room
     console.log('socket.sessionID', socket.sessionID)
     console.log('sessions[socket.sessionID]', sessions[socket.sessionID])
-    if (sessions[socket.sessionID].room) {
-      const room = sessions[socket.sessionID].room;
-      //remove user from room state
-      //remove username from state[roomName].users
-      console.log('removing ' + socket.username + 'from room: ' + room)
-      const i = state[room].users.indexOf(socket.username);
-      state[room].users.splice(i, 1);
-      io.in(roomName).emit("updatePlayerList", state[room].users);
-    } else {
-      console.log('no room found to remove the user from')
+
+    if (socket.hasOwnProperty('sessionID')) {
+      if (sessions[socket.sessionID].hasOwnProperty('room')) {
+        const room = sessions[socket.sessionID].room;
+        //remove user from room state
+        //remove username from state[roomName].users
+        console.log('removing ' + socket.username + 'from room: ' + room)
+        const i = state[room].users.indexOf(socket.username);
+        state[room].users.splice(i, 1);
+        io.in(room).emit("updatePlayerList", state[room].users);
+      } else {
+        console.log('no room found to remove the user from')
+      }
     }
   });
+
 });
 
 function makeId(length) {
