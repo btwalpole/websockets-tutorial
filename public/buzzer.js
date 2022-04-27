@@ -62,7 +62,7 @@ joinGameBtn.addEventListener("click", function () {
     console.log("now connecting to socket.io");
     socket.connect();
     console.log("joining room: ", gameCode.value);
-    socket.emit("joinGame", { roomName: gameCode.value, reJoin: false });
+    socket.emit("joinGame", { roomName: gameCode.value});
   } else {
     console.log("game code field is empty");
   }
@@ -71,32 +71,23 @@ joinGameBtn.addEventListener("click", function () {
 socket.on("clearLocalStorage", () => {
   console.log("clearing localStorage");
   localStorage.removeItem("sessionID");
-  console.log(
-    "checking localStorage for sessionID: ",
-    localStorage.getItem("sessionID")
-  );
   socket.auth  = {}
   socket.disconnect();
 });
 
 socket.on("newSession", ({ sessionID, userID }) => {
-  // attach the session ID to the next reconnection attempts
+  // attach the session ID to the socket for the next reconnection attempts
   socket.auth = { sessionID };
-  // store it in the localStorage
   localStorage.setItem("sessionID", sessionID);
-  // save the ID of the user
   socket.userID = userID;
-  console.log("got session event, now socket is: ", socket);
+  console.log("got new session event");
 });
 
 socket.on("oldSession", ({ userID, roomName, oldUserName }) => {
-  // save the ID of the user
   socket.userID = userID;
   socket.roomName = roomName;
   userName.value = oldUserName;
   console.log("got old session event");
-  console.log("room name: ", socket.roomName);
-  console.log("room name 2: ", roomName);
   socket.emit("joinGame", { roomName: socket.roomName, reJoin: true });
 });
 
@@ -127,8 +118,6 @@ socket.on("userNameTaken", (takenName) => {
   userNameJoin.after(nameTakenErrMsg);
 });
 
-//Below is for once you've joined a game
-
 socket.on("showGameCode", function (roomName) {
   console.log("showing the game code: ", roomName);
   gameCodeDisplay.innerText = roomName;
@@ -144,20 +133,8 @@ socket.on("updatePlayerList", function (players) {
   });
 });
 
-socket.on("buzzerState", function ({buzzerEnabled}) {
-  console.log("buzzerEnabled: ", buzzerEnabled);
-  if(buzzerEnabled) {
-    enableBuzzer();
-    console.log('enabling buzzer')
-  } else {
-    disableBuzzer();
-    console.log('disabling buzzer')
-  }
-});
-
 //// Using the buzzer
 
-// Emit events
 buzzBack[0].addEventListener("click", function () {
   const random = Math.floor(Math.random() * emojis.length);
 
@@ -183,35 +160,31 @@ resetBtn.addEventListener("click", function () {
 
 //Listen for events
 socket.on("buzzed", function (data) {
-  console.log("current socket id: ", socket.userID);
-  console.log("admin socket id: ", data.admin);
-
-/* // dont need the if statement as only the admin sees it anyway
-  if (socket.userID === data.admin) {
-    console.log("you are the admin!");
-    resetBtn.disabled = false;
-    resetBtn.classList.add("enabled-reset");
-    resetBtn.classList.remove("disabled-reset");
-  }
-  */
-
   disableBuzzer();
-
   output.innerHTML =
     "<p id='nameText'>" +
     data.name +
     "</p><p>   buzzed first!!</p><p id='emoji'> " +
     emojis[data.emojiNum] +
     " </p>";
-
 });
 
 socket.on("reset", function () {
   enableBuzzer();
 });
 
+socket.on("buzzerState", function ({buzzerEnabled}) {
+  console.log("buzzerEnabled: ", buzzerEnabled);
+  if(buzzerEnabled) {
+    enableBuzzer();
+    console.log('enabling buzzer')
+  } else {
+    disableBuzzer();
+    console.log('disabling buzzer')
+  }
+});
+
 function enableBuzzer() {
-  //these changes are only visible to the admin user, button is invisble to all others
   buzzBack[0].disabled = false;
   buzzBack[0].classList.add("enabled-buzzBack");
   buzzBack[0].classList.remove("disabled-buzzBack");
