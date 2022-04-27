@@ -1,4 +1,4 @@
-//Make connection
+//Initialise socket
 const socket = io({
   autoConnect: false,
   auth: {},

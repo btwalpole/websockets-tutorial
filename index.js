@@ -43,7 +43,7 @@ io.on("connection", function (socket) {
           " but no session in server!"
       );
       console.log(
-        "telling client to remove session from storage and reconnect"
+        "telling client to remove session from storage and disconnect"
       );
       socket.emit("clearLocalStorage");
     }
@@ -90,7 +90,7 @@ io.on("connection", function (socket) {
     if (state[roomName]) {
       console.log("room " + roomName + " does exist");
       //first need to check if a player already exists with this name in this room
-      if (reJoin === false && state[roomName].users.includes(socket.username)) {
+      if (state[roomName].users.includes(socket.username)) {
         socket.emit("userNameTaken", socket.username);
       } else {
         console.log("name is not taken");
