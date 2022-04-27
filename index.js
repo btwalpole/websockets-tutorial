@@ -75,7 +75,7 @@ io.on("connection", function (socket) {
     };
 
     //define state of room, set admin as first user
-    state[roomName] = { admin: socket.userID, users: [socket.username] };
+    state[roomName] = { admin: socket.userID, users: [socket.username], buzzerEnabled: true };
 
     socket.join(roomName);
     socket.emit("initQuiz", { admin: state[roomName].admin });
@@ -119,6 +119,7 @@ io.on("connection", function (socket) {
         socket.emit("showGameCode", roomName);
 
         io.to(roomName).emit("updatePlayerList", state[roomName].users);
+        io.to(roomName).emit("buzzerState", {buzzerEnabled: state[roomName].buzzerEnabled});
       }
     } else {
       console.log("room " + roomName + " does NOT exist");
@@ -130,6 +131,7 @@ io.on("connection", function (socket) {
     console.log("this person buzzed: ", data.name);
     console.log("they buzzed in this room ", data.roomName);
     console.log("admin of this room is: ", state[data.roomName].admin);
+    state[data.roomName].buzzerEnabled = false;
     io.to(data.roomName).emit("buzzed", {
       ...data,
       admin: state[data.roomName].admin,
@@ -137,6 +139,7 @@ io.on("connection", function (socket) {
   });
 
   socket.on("reset", function (roomName) {
+    state[roomName].buzzerEnabled = true;
     io.in(roomName).emit("reset");
   });
 

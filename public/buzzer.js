@@ -145,6 +145,17 @@ socket.on("updatePlayerList", function (players) {
   });
 });
 
+socket.on("buzzerState", function ({buzzerEnabled}) {
+  console.log("buzzerEnabled: ", buzzerEnabled);
+  if(buzzerEnabled) {
+    enableBuzzer();
+    console.log('enabling buzzer')
+  } else {
+    disableBuzzer();
+    console.log('disabling buzzer')
+  }
+});
+
 //// Using the buzzer
 
 // Emit events
@@ -176,12 +187,16 @@ socket.on("buzzed", function (data) {
   console.log("current socket id: ", socket.userID);
   console.log("admin socket id: ", data.admin);
 
+/* // dont need the if statement as only the admin sees it anyway
   if (socket.userID === data.admin) {
     console.log("you are the admin!");
     resetBtn.disabled = false;
     resetBtn.classList.add("enabled-reset");
     resetBtn.classList.remove("disabled-reset");
   }
+  */
+
+  disableBuzzer();
 
   output.innerHTML =
     "<p id='nameText'>" +
@@ -189,15 +204,14 @@ socket.on("buzzed", function (data) {
     "</p><p>   buzzed first!!</p><p id='emoji'> " +
     emojis[data.emojiNum] +
     " </p>";
-  buzzBack[0].disabled = true;
-  buzzBack[0].classList.add("disabled-buzzBack");
-  buzzBack[0].classList.remove("enabled-buzzBack");
-  buzzFront[0].classList.add("disabled-buzzFront");
-  buzzFront[0].classList.remove("enabled-buzzFront");
-  //chat.scrollTop = chat.scrollHeight;
+
 });
 
 socket.on("reset", function () {
+  enableBuzzer();
+});
+
+function enableBuzzer() {
   //these changes are only visible to the admin user, button is invisble to all others
   buzzBack[0].disabled = false;
   buzzBack[0].classList.add("enabled-buzzBack");
@@ -207,7 +221,18 @@ socket.on("reset", function () {
   resetBtn.disabled = true;
   resetBtn.classList.remove("enabled-reset");
   resetBtn.classList.add("disabled-reset");
-});
+}
+
+function disableBuzzer() {
+  buzzBack[0].disabled = true;
+  buzzBack[0].classList.add("disabled-buzzBack");
+  buzzBack[0].classList.remove("enabled-buzzBack");
+  buzzFront[0].classList.add("disabled-buzzFront");
+  buzzFront[0].classList.remove("enabled-buzzFront");
+  resetBtn.disabled = false;
+  resetBtn.classList.add("enabled-reset");
+  resetBtn.classList.remove("disabled-reset");
+}
 
 const emojis = [
   "&#128512;",
