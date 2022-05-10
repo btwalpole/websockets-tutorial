@@ -1,122 +1,126 @@
-//Make connection
-//const socket = io.connect('http://localhost:4000');
-const socket = io();
+//Initialise socket
+const socket = io({
+  autoConnect: false,
+  auth: {},
+});
+
+//on page load, check localstorage for session id
+//if none, then we connect later on joining/ crating a game
+const sessionID = localStorage.getItem("sessionID");
+if (sessionID) {
+  console.log("found a session id: ", sessionID);
+  socket.auth.sessionID = sessionID;
+  socket.connect();
+} else {
+  console.log('no previous session id found')
+}
 
 //Query DOM
 var resetBtn = document.getElementById("reset"),
   userName = document.getElementById("userName"),
   buzzBack = document.getElementsByClassName("buzzBack"),
-  buzzFront = document.getElementsByClassName("buzzFront")
-  chat = document.getElementById("chat-window"),
+  buzzFront = document.getElementsByClassName("buzzFront"),
   output = document.getElementById("output"),
-  initScreen = document.getElementById("initialScreen"),
+  homeScreen = document.getElementById("homeScreen"),
+  homeUserName = document.getElementById("homeUserName"),
   gameScreen = document.getElementById("gameScreen"),
   enterNameScreen = document.getElementById("enterNameScreen"),
-  enterNameScreenJoin = document.getElementById("enterNameScreen-Join"),
   roomNameCreate = document.getElementById("roomNameCreate"),
-  roomNameJoin = document.getElementById("roomNameJoin"),
-  userNameJoin = document.getElementById("userNameJoin"),
   newGameBtn = document.getElementById("newGameButton"),
-  submitNameBtn = document.getElementById("submitNameButton"),
-  submitNameJoinBtn = document.getElementById("submitNameButton-Join"),
-  joinGameBtn = document.getElementById("joinGameButton"),
+  joinGameBtn = document.getElementById("joinGameBtn"),
+  submitNameBtn = document.getElementById("submitNameBtn"),
   gameCodeDisplay = document.getElementById("gameCodeDisplay"),
   gameCode = document.getElementById("gameCode"),
   nameDisplay = document.getElementById("name"),
   playersDisplay = document.getElementById("players");
 
 //// Setting up the game
-newGameBtn.addEventListener("click", function () {
-  socket.emit("promptUsername");
-});
-
 submitNameBtn.addEventListener("click", function () {
-  console.log("name: ", userName.value);
-  console.log("room: ", roomNameCreate.innerText);
+  homeScreen.style.display = "flex";
+  enterNameScreen.style.display = "none";
 
-  socket.emit("newGame", {
-    userName: userName.value,
-    roomName: roomNameCreate.innerText,
-  });
+  console.log("name: ", userName.value);
+  socket.auth.username = userName.value;
+
+  homeUserName.innerText = userName.value;
 });
 
-submitNameJoinBtn.addEventListener("click", function () {
-  console.log("joining with name: ", userNameJoin.value);
-  console.log("joining room: ", roomNameJoin.innerText);
-
-  socket.emit("joinGame", {
-    userName: userNameJoin.value,
-    roomName: roomNameJoin.innerText,
-  });
+newGameBtn.addEventListener("click", function () {
+  console.log("now creating game as ", userName.value);
+  //socket.auth.username = userName.value;
+  console.log("socket", socket);
+  console.log("now connecting to socket.io");
+  socket.connect();
+  console.log("now emitting newGame event");
+  socket.emit("newGame");
 });
 
 joinGameBtn.addEventListener("click", function () {
   if (gameCode.value != "") {
-    socket.emit("searchGame", gameCode.value);
+    //socket.auth.username = userName.value;
+    console.log("socket", socket);
+    console.log("now connecting to socket.io");
+    socket.connect();
+    console.log("joining room: ", gameCode.value);
+    socket.emit("joinGame", { roomName: gameCode.value});
   } else {
     console.log("game code field is empty");
   }
 });
 
-function clear() {
-  gameCodeInput.value = "";
-  initScreen.style.display = "flex";
-  gameScreen.style.display = "none";
-}
-
-socket.on("displayEnterNameScreen", (roomName) => {
-  roomNameCreate.innerText = roomName;
-  console.log(
-    "about to enter user name for creating room: ",
-    roomNameCreate.innerText
-  );
-  initScreen.style.display = "none";
-  enterNameScreen.style.display = "flex";
+socket.on("clearLocalStorage", () => {
+  console.log("clearing localStorage");
+  localStorage.removeItem("sessionID");
+  socket.auth  = {}
+  socket.disconnect();
 });
 
-socket.on("displayEnterNameScreen-Join", (roomName) => {
-  roomNameJoin.innerText = roomName;
-  console.log(
-    "about to enter user name for joining room: ",
-    roomNameJoin.innerText
-  );
-  initScreen.style.display = "none";
-  enterNameScreenJoin.style.display = "flex";
+socket.on("newSession", ({ sessionID, userID }) => {
+  // attach the session ID to the socket for the next reconnection attempts
+  socket.auth = { sessionID };
+  localStorage.setItem("sessionID", sessionID);
+  socket.userID = userID;
+  console.log("got new session event");
+});
+
+socket.on("oldSession", ({ userID, roomName, oldUserName }) => {
+  socket.userID = userID;
+  socket.roomName = roomName;
+  userName.value = oldUserName;
+  console.log("got old session event");
+  socket.emit("joinGame", { roomName: socket.roomName, reJoin: true });
+});
+
+socket.on("initQuiz", function (data) {
+  //hide the home screen a show the game screen
+  homeScreen.style.display = "none";
+  gameScreen.style.display = "flex";
+  enterNameScreen.style.display = "none";
+  nameDisplay.innerText = userName.value;
+  if (socket.userID === data.admin) {
+    resetBtn.style.display = "flex";
+  }
 });
 
 socket.on("noSuchRoom", (roomName) => {
-  console.log('entered room ' + roomName + ' does not exist');
+  console.log("entered room " + roomName + " does not exist");
   let errorMsg = document.createElement("p");
   errorMsg.setAttribute("id", "errorMsg");
-  errorMsg.innerHTML = 'No such room exists!';
+  errorMsg.innerHTML = "No such room exists!";
   gameCode.after(errorMsg);
-})
+});
 
-socket.on("userNameTaken", takenName => {
-  console.log('user name ' + takenName + ' is already taken!')
+socket.on("userNameTaken", (takenName) => {
+  console.log("user name " + takenName + " is already taken!");
   let nameTakenErrMsg = document.createElement("p");
   nameTakenErrMsg.setAttribute("id", "nameTakenErrMsg");
-  nameTakenErrMsg.innerHTML = 'User name already taken!';
+  nameTakenErrMsg.innerHTML = "User name already taken!";
   userNameJoin.after(nameTakenErrMsg);
-})
-
-//Below is for once you've joined a game
+});
 
 socket.on("showGameCode", function (roomName) {
   console.log("showing the game code: ", roomName);
   gameCodeDisplay.innerText = roomName;
-});
-
-socket.on("initQuiz", function (data) {
-  //hide the intro screen a show the game screen
-  initScreen.style.display = "none";
-  enterNameScreen.style.display = "none";
-  enterNameScreenJoin.style.display = "none";
-  gameScreen.style.display = "flex";
-  nameDisplay.innerText = data.name;
-  if (socket.id === data.admin) {
-    resetBtn.style.display = "flex";
-  }
 });
 
 socket.on("updatePlayerList", function (players) {
@@ -131,7 +135,6 @@ socket.on("updatePlayerList", function (players) {
 
 //// Using the buzzer
 
-// Emit events
 buzzBack[0].addEventListener("click", function () {
   const random = Math.floor(Math.random() * emojis.length);
 
@@ -157,32 +160,31 @@ resetBtn.addEventListener("click", function () {
 
 //Listen for events
 socket.on("buzzed", function (data) {
-  console.log("current socket id: ", socket.id);
-  console.log("admin socket id: ", data.admin);
-
-  if (socket.id === data.admin) {
-    console.log("you are the admin!");
-    resetBtn.disabled = false;
-    resetBtn.classList.add("enabled-reset");
-    resetBtn.classList.remove("disabled-reset");
-  }
-
+  disableBuzzer();
   output.innerHTML =
     "<p id='nameText'>" +
     data.name +
     "</p><p>   buzzed first!!</p><p id='emoji'> " +
     emojis[data.emojiNum] +
     " </p>";
-  buzzBack[0].disabled = true;
-  buzzBack[0].classList.add("disabled-buzzBack");
-  buzzBack[0].classList.remove("enabled-buzzBack");
-  buzzFront[0].classList.add("disabled-buzzFront");
-  buzzFront[0].classList.remove("enabled-buzzFront");
-  //chat.scrollTop = chat.scrollHeight;
 });
 
 socket.on("reset", function () {
-  //these changes are only visible to the admin user, button is invisble to all others
+  enableBuzzer();
+});
+
+socket.on("buzzerState", function ({buzzerEnabled}) {
+  console.log("buzzerEnabled: ", buzzerEnabled);
+  if(buzzerEnabled) {
+    enableBuzzer();
+    console.log('enabling buzzer')
+  } else {
+    disableBuzzer();
+    console.log('disabling buzzer')
+  }
+});
+
+function enableBuzzer() {
   buzzBack[0].disabled = false;
   buzzBack[0].classList.add("enabled-buzzBack");
   buzzBack[0].classList.remove("disabled-buzzBack");
@@ -191,7 +193,18 @@ socket.on("reset", function () {
   resetBtn.disabled = true;
   resetBtn.classList.remove("enabled-reset");
   resetBtn.classList.add("disabled-reset");
-});
+}
+
+function disableBuzzer() {
+  buzzBack[0].disabled = true;
+  buzzBack[0].classList.add("disabled-buzzBack");
+  buzzBack[0].classList.remove("enabled-buzzBack");
+  buzzFront[0].classList.add("disabled-buzzFront");
+  buzzFront[0].classList.remove("enabled-buzzFront");
+  resetBtn.disabled = false;
+  resetBtn.classList.add("enabled-reset");
+  resetBtn.classList.remove("disabled-reset");
+}
 
 const emojis = [
   "&#128512;",

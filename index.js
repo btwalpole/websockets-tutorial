@@ -14,15 +14,107 @@ app.use(express.static("public"));
 const io = socket(server);
 
 const state = {};
-const clientRooms = {}; //allows us to look up room name of a given userId
+const sessions = {}; //allows us to look up room name of a given sessionID
 
 io.on("connection", function (socket) {
   console.log("made socket connection", socket.id);
 
+  const sessionID = socket.handshake.auth.sessionID;
+  console.log("sessionID: ", sessionID);
+
+  if (sessionID) {
+    // check if there is an associated room and userid and username for this session
+    if (sessions[sessionID]) {
+      // setting values on the socket instance
+      socket.sessionID = sessionID;
+      socket.userID = sessions[sessionID].userID;
+      socket.username = sessions[sessionID].username;
+      console.log("found session details: ", sessions[sessionID]);
+
+      socket.emit("oldSession", {
+        userID: socket.userID,
+        roomName: sessions[sessionID].room,
+        oldUserName: socket.username,
+      });
+    } else {
+      console.log(
+        "found sessionID in localStorage " +
+          sessionID +
+          " but no session in server!"
+      );
+      console.log(
+        "telling client to remove session from storage and disconnect"
+      );
+      socket.emit("clearLocalStorage");
+    }
+  } else {
+    //no session ID saved in localStorage - send ID to be set
+    const username = socket.handshake.auth.username;
+    console.log("username", username);
+    if (!username) {
+      console.log("invalid or no username");
+    }
+    socket.sessionID = makeId(10);
+    console.log("freshly created sessionID: ", socket.sessionID);
+    socket.userID = makeId(15);
+    socket.username = username;
+
+    socket.emit("newSession", {
+      sessionID: socket.sessionID,
+      userID: socket.userID,
+    });
+  }
+
+  socket.on("newGame", function () {
+    console.log("starting new game");
+    const roomName = makeId(5);
+    sessions[socket.sessionID] = {
+      room: roomName,
+      userID: socket.userID,
+      username: socket.username,
+    };
+
+    //define state of room, set admin as first user
+    state[roomName] = { admin: socket.userID, users: [socket.username], buzzerEnabled: true };
+
+    socket.join(roomName);
+    socket.emit("initQuiz", { admin: state[roomName].admin });
+
+    //send roomName back to user for display, handle this on front end
+    socket.emit("showGameCode", roomName);
+    console.log("players: ", state[roomName].users);
+    io.in(roomName).emit("updatePlayerList", state[roomName].users);
+  });
+
+  socket.on("joinGame", function ({ roomName }) {
+    if (state[roomName]) {
+      //first need to check if a player already exists with this name in this room
+      if (state[roomName].users.includes(socket.username)) {
+        socket.emit("userNameTaken", socket.username);
+      } else {
+        //if name not taken, join the room:
+        sessions[socket.sessionID] = {
+          room: roomName,
+          userID: socket.userID,
+          username: socket.username,
+        };
+        state[roomName].users.push(socket.username);
+        socket.join(roomName);
+        socket.emit("initQuiz", {
+          name: socket.username,
+          admin: state[roomName].admin,
+        });
+        socket.emit("showGameCode", roomName);
+        io.to(roomName).emit("updatePlayerList", state[roomName].users);
+        io.to(roomName).emit("buzzerState", {buzzerEnabled: state[roomName].buzzerEnabled});
+      }
+    } else {
+      socket.emit("noSuchRoom", roomName);
+    }
+  });
+
   socket.on("buzz", function (data) {
-    console.log("this person buzzed: ", data.name);
-    console.log("they buzzed in this room ", data.roomName);
-    console.log("admin of this room is: ", state[data.roomName].admin);
+    state[data.roomName].buzzerEnabled = false;
     io.to(data.roomName).emit("buzzed", {
       ...data,
       admin: state[data.roomName].admin,
@@ -30,74 +122,35 @@ io.on("connection", function (socket) {
   });
 
   socket.on("reset", function (roomName) {
+    state[roomName].buzzerEnabled = true;
     io.in(roomName).emit("reset");
   });
 
-  socket.on("promptUsername", () => {
-    console.log("prompting user to enter name");
-    let roomName = makeid(5);
-    socket.emit("displayEnterNameScreen", roomName);
-  });
+  socket.on("disconnect", () => {
+    console.log(socket.id);
+    //check if user is in a room
+    console.log('socket.sessionID', socket.sessionID)
+    console.log('sessions[socket.sessionID]', sessions[socket.sessionID])
 
-  socket.on("newGame", function ({ userName, roomName }) {
-    console.log("starting new game");
-    clientRooms[socket.id] = roomName;
-
-    //define state of room, set admin as first user
-    state[roomName] = { admin: socket.id, users: [userName] };
-
-    socket.join(roomName);
-    socket.number = 1;
-    socket.emit("initQuiz", { name: userName, admin: state[roomName].admin });
-    //send roomName back to user for display, handle this on front end
-    socket.emit("showGameCode", roomName);
-    console.log("players backend: ", state[roomName].users);
-    io.in(roomName).emit("updatePlayerList", state[roomName].users);
-  });
-
-  socket.on("searchGame", function (roomName) {
-    console.log("trying to join room ", roomName);
-
-    if (state[roomName]) {
-      console.log('room ' + roomName + ' does exist');
-      socket.emit("displayEnterNameScreen-Join", roomName);
-    } else {
-      console.log('room ' + roomName + ' does NOT exist');
-      socket.emit("noSuchRoom", roomName);
+    if (socket.hasOwnProperty('sessionID')) {
+      if (sessions[socket.sessionID].hasOwnProperty('room')) {
+        const room = sessions[socket.sessionID].room;
+        //remove user from room state
+        console.log('removing ' + socket.username + 'from room: ' + room)
+        const i = state[room].users.indexOf(socket.username);
+        state[room].users.splice(i, 1);
+        io.in(room).emit("updatePlayerList", state[room].users);
+      } else {
+        console.log('no room found to remove the user from')
+      }
     }
   });
 
-  socket.on("joinGame", function ({ userName, roomName }) {
-    //first need to check if a player already exists with this name in this room
-    //check if state[roomName].users contains userName
-    if (state[roomName].users.includes(userName)) {
-      console.log('this name is taken')
-    //if username taken then send message back to user saying this
-      socket.emit("userNameTaken", userName)
-    } else {
-      console.log('name is not taken')
-      //if name not taken, join the room:
-      clientRooms[socket.id] = roomName;
-      state[roomName].users.push(userName);
-
-      console.log("now joining ", roomName);
-      socket.join(roomName);
-
-      console.log("user: " + userName + " is joining room " + roomName);
-      console.log("admin of this room is: ", state[roomName].admin);
-
-      socket.emit("initQuiz", { name: userName, admin: state[roomName].admin });
-      socket.emit("showGameCode", roomName);
-
-      io.to(roomName).emit("updatePlayerList", state[roomName].users);
-    }
-  });
 });
 
-function makeid(length) {
+function makeId(length) {
   var result = "";
-  var characters =
-    "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+  var characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
   var charactersLength = characters.length;
   for (var i = 0; i < length; i++) {
     result += characters.charAt(Math.floor(Math.random() * charactersLength));
